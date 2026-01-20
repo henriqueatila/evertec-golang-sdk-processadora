@@ -1,0 +1,82 @@
+# golangci-lint configuration for Evertec Processadora SDK
+
+run:
+  timeout: 5m
+  tests: true
+  modules-download-mode: readonly
+
+linters:
+  enable:
+    # Default linters
+    - errcheck      # Check for unchecked errors
+    - gosimple      # Simplify code
+    - govet         # Go vet
+    - ineffassign   # Detect ineffective assignments
+    - staticcheck   # Static analysis
+    - unused        # Find unused code
+
+    # Security (fintech-critical)
+    - gosec         # Security issues
+    - bodyclose     # Check HTTP body close
+
+    # Bug detection
+    - durationcheck # Check duration multiplications
+    - nilerr        # Check nil error returns
+    - sqlclosecheck # Check SQL rows/statements close
+
+    # Code quality
+    - contextcheck  # Check context.Context usage
+    - goconst       # Find repeated strings
+    - gofmt         # Format check
+    - goimports     # Import check
+    - prealloc      # Slice preallocation
+    - unconvert     # Remove unnecessary conversions
+    - whitespace    # Whitespace issues
+
+    # Note: These linters have many existing violations - enable gradually:
+    # - errname       # Check error naming conventions (existing ErrorCode types)
+    # - errorlint     # Error wrapping issues
+    # - gocritic      # Comprehensive linter
+    # - misspell      # Spelling mistakes (Portuguese strings)
+    # - revive        # Fast, extensible linter (many unused-parameter in handlers)
+    # - unparam       # Unused function parameters
+
+linters-settings:
+  gosec:
+    excludes:
+      - G107  # URL provided as taint input (expected in SDK tests)
+      - G204  # Subprocess usage (test helpers)
+      - G304  # File operations (test fixtures)
+
+  govet:
+    enable-all: true
+    disable:
+      - fieldalignment  # Not critical for SDK
+
+  goimports:
+    local-prefixes: github.com/henriqueatila/evertec-golang-sdk-processadora
+
+  goconst:
+    min-len: 3
+    min-occurrences: 4  # Relax from default 3 to reduce noise
+
+issues:
+  exclude-rules:
+    # Test files - relax some rules
+    - path: "_test\\.go"
+      linters:
+        - goconst
+        - gosec  # Test files may use insecure settings intentionally
+
+    # False positive: EventType constant, not credentials
+    - path: "webhook/types\\.go"
+      text: "G101"
+
+  exclude:
+    # Allow variable shadowing in tests (common pattern)
+    - "shadow: declaration of .err. shadows"
+    # Allow unused writes in test setup (struct initialization for coverage)
+    - "unusedwrite"
+
+  max-issues-per-linter: 50
+  max-same-issues: 10

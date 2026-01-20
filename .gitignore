@@ -1,0 +1,63 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Test binary
+*.test
+
+# Output of go coverage tool
+*.out
+coverage/
+coverage.html
+
+# Dependency directories
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Certificates (keep examples)
+*.pem
+*.crt
+*.key
+!*.example.pem
+!*.example.crt
+!*.example.key
+
+# Debug
+*.log
+logs.txt
+
+# Cache
+.cache/
+__pycache__/
+
+# Claude/AI config
+.claude/
+CLAUDE.md
+
+# Internal docs and plans
+docs/
+plans/
+CONFORMITY_REPORT.md
+
+# Generated
+repomix-output.xml
