@@ -1,8 +1,9 @@
 package client
 
 import (
+	"crypto/rand"
+	"encoding/binary"
 	"math"
-	"math/rand"
 	"net/http"
 	"strconv"
 	"time"
@@ -89,8 +90,8 @@ func calculateBackoff(attempt int, initialDelay, maxDelay time.Duration) time.Du
 		delay = float64(maxDelay)
 	}
 
-	// Apply jitter: 0.5x to 1.5x
-	jitter := 0.5 + rand.Float64() // [0.5, 1.5)
+	// Apply jitter: 0.5x to 1.5x (using crypto/rand)
+	jitter := 0.5 + cryptoFloat64() // [0.5, 1.5)
 	delay *= jitter
 
 	return time.Duration(delay)
@@ -112,4 +113,13 @@ func parseRetryAfter(resp *http.Response) time.Duration {
 		return 0
 	}
 	return time.Duration(seconds) * time.Second
+}
+
+// cryptoFloat64 returns a cryptographically secure random float64 in [0.0, 1.0).
+func cryptoFloat64() float64 {
+	var b [8]byte
+	_, _ = rand.Read(b[:])
+	// Use top 53 bits for float64 mantissa precision
+	v := binary.BigEndian.Uint64(b[:]) >> 11
+	return float64(v) / float64(1<<53)
 }
