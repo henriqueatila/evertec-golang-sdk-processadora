@@ -14,16 +14,16 @@ func TestClient_ListDisputes(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.ListDisputesRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:    "success: list disputes without filters",
 			request: nil,
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": true,
-				"disputes": []map[string]interface{}{
+				"disputes": []map[string]any{
 					{"disputeId": "disp001", "disputeStatus": "OPEN"},
 					{"disputeId": "disp002", "disputeStatus": "RESOLVED"},
 				},
@@ -36,9 +36,9 @@ func TestClient_ListDisputes(t *testing.T) {
 			request: &types.ListDisputesRequest{
 				DisputeStatus: "OPEN",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": false,
-				"disputes": []map[string]interface{}{
+				"disputes": []map[string]any{
 					{"disputeId": "disp001", "disputeStatus": "OPEN"},
 				},
 			},
@@ -54,9 +54,9 @@ func TestClient_ListDisputes(t *testing.T) {
 				Limit:         20,
 				StartingAfter: "disp100",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"disputes": []map[string]interface{}{},
+				"disputes": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -102,7 +102,7 @@ func TestClient_CreateDispute(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.CreateDisputeRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -115,14 +115,14 @@ func TestClient_CreateDispute(t *testing.T) {
 				DisputeCode:        "FRAUD",
 				DisputeTextMessage: "Unauthorized transaction",
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode":        0,
 					"resultDescription": "Disputa criada com sucesso!",
 					"issuerRequestId":   "issuer-disp-001",
 					"psResponseId":      "ps-resp-001",
 				},
-				"dispute": map[string]interface{}{
+				"dispute": map[string]any{
 					"disputeId":     "disp001",
 					"disputeStatus": "OPEN",
 				},
@@ -171,14 +171,14 @@ func TestClient_GetDispute(t *testing.T) {
 	tests := []struct {
 		name         string
 		disputeID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:      "success: get dispute",
 			disputeID: "disp123",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"disputeId":     "disp123",
 				"disputeStatus": "OPEN",
 				"disputeType":   "chargeback",
@@ -282,7 +282,7 @@ func TestClient_AttachDisputeDocument(t *testing.T) {
 		name         string
 		disputeID    string
 		request      *types.DisputeDocumentRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -296,12 +296,12 @@ func TestClient_AttachDisputeDocument(t *testing.T) {
 					Document:     "base64encodeddata",
 				},
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode":        0,
 					"resultDescription": "Success",
 				},
-				"dispute": map[string]interface{}{
+				"dispute": map[string]any{
 					"disputeId": "disp123",
 				},
 			},
@@ -322,11 +322,11 @@ func TestClient_AttachDisputeDocument(t *testing.T) {
 					OperatorID: "user123",
 				},
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode": 0,
 				},
-				"dispute": map[string]interface{}{
+				"dispute": map[string]any{
 					"disputeId": "disp456",
 				},
 			},
@@ -391,7 +391,7 @@ func TestClient_RespondToDispute(t *testing.T) {
 		name         string
 		disputeID    string
 		request      *types.DisputeResponseRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -404,12 +404,12 @@ func TestClient_RespondToDispute(t *testing.T) {
 				DisputeResponseTextMessage: "Accepted",
 				WillAddDocuments:           false,
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode":        0,
 					"resultDescription": "Success",
 				},
-				"dispute": map[string]interface{}{
+				"dispute": map[string]any{
 					"disputeId": "disp123",
 					"status":    "ACCEPTED",
 				},
@@ -429,11 +429,11 @@ func TestClient_RespondToDispute(t *testing.T) {
 					OperatorID: "user123",
 				},
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode": 0,
 				},
-				"dispute": map[string]interface{}{
+				"dispute": map[string]any{
 					"disputeId": "disp456",
 					"status":    "ARBITRATION",
 				},

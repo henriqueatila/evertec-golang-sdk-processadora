@@ -26,7 +26,8 @@ const (
 	// BasePath is the API base path.
 	BasePath = "/paySmart/ps-processadora/v1"
 
-	defaultTimeout = 30 * time.Second
+	defaultTimeout         = 30 * time.Second
+	defaultMaxResponseBody = 10 * 1024 * 1024 // 10 MB
 )
 
 // idempotencyKeyCtxKey is the context key for custom idempotency keys.
@@ -53,12 +54,13 @@ func getIdempotencyKey(ctx context.Context) (string, bool) {
 
 // Client is the Evertec Processadora API client.
 type Client struct {
-	httpClient *http.Client
-	baseURL    string
-	apiKey     string
-	userAgent  string
-	hooks      []Hook
-	logger     *slog.Logger
+	httpClient      *http.Client
+	baseURL         string
+	apiKey          string
+	userAgent       string
+	hooks           []Hook
+	logger          *slog.Logger
+	maxResponseBody int64
 }
 
 // Config holds client configuration.
@@ -77,6 +79,8 @@ type Config struct {
 	Logger *slog.Logger
 	// Hooks are observability hooks for metrics, tracing, etc. (optional)
 	Hooks []Hook
+	// MaxResponseBody is the maximum response body size in bytes (defaults to 10 MB)
+	MaxResponseBody int64
 }
 
 // New creates a new Evertec client.
@@ -101,20 +105,29 @@ func New(cfg Config) (*Client, error) {
 		timeout = defaultTimeout
 	}
 
+	maxResponseBody := cfg.MaxResponseBody
+	if maxResponseBody <= 0 {
+		maxResponseBody = defaultMaxResponseBody
+	}
+
 	httpClient := &http.Client{
 		Timeout: timeout,
 		Transport: &http.Transport{
-			TLSClientConfig: cfg.TLSConfig,
+			TLSClientConfig:     cfg.TLSConfig,
+			MaxIdleConns:        100,
+			MaxIdleConnsPerHost: 20,
+			IdleConnTimeout:     90 * time.Second,
 		},
 	}
 
 	return &Client{
-		httpClient: httpClient,
-		baseURL:    baseURL + BasePath,
-		apiKey:     cfg.APIKey,
-		userAgent:  cfg.UserAgent,
-		hooks:      cfg.Hooks,
-		logger:     cfg.Logger,
+		httpClient:      httpClient,
+		baseURL:         baseURL + BasePath,
+		apiKey:          cfg.APIKey,
+		userAgent:       cfg.UserAgent,
+		hooks:           cfg.Hooks,
+		logger:          cfg.Logger,
+		maxResponseBody: maxResponseBody,
 	}, nil
 }
 
@@ -166,7 +179,7 @@ func WithHomolog() Option {
 }
 
 // request performs an HTTP request with required headers.
-func (c *Client) request(ctx context.Context, method, path string, body interface{}, result interface{}) error {
+func (c *Client) request(ctx context.Context, method, path string, body any, result any) error {
 	start := time.Now()
 
 	// Check for context cancellation early to avoid unnecessary work
@@ -243,7 +256,7 @@ func (c *Client) request(ctx context.Context, method, path string, body interfac
 	}
 	defer resp.Body.Close()
 
-	respBody, err := io.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(io.LimitReader(resp.Body, c.maxResponseBody))
 	if err != nil {
 		c.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: resp.StatusCode,

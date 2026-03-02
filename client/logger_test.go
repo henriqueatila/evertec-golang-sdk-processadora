@@ -41,7 +41,7 @@ func TestLogRequest_Success(t *testing.T) {
 	logOutput := buf.String()
 
 	// Parse JSON log
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal([]byte(logOutput), &logEntry); err != nil {
 		t.Fatalf("failed to parse log output: %v", err)
 	}
@@ -129,7 +129,7 @@ func TestLogRequest_Error(t *testing.T) {
 	logOutput := buf.String()
 
 	// Parse JSON log
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal([]byte(logOutput), &logEntry); err != nil {
 		t.Fatalf("failed to parse log output: %v", err)
 	}
@@ -162,7 +162,7 @@ func TestLogRequest_ErrorStatus(t *testing.T) {
 
 	c.logRequest(context.Background(), reqInfo, respInfo)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("failed to parse log output: %v", err)
 	}
@@ -184,7 +184,7 @@ func TestLogRequest_5xxError(t *testing.T) {
 
 	c.logRequest(context.Background(), reqInfo, respInfo)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("failed to parse log output: %v", err)
 	}

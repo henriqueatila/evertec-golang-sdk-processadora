@@ -55,7 +55,7 @@ func (c *Client) ListInclusiveTransactions(ctx context.Context, params *ListIncl
 // GetInclusiveTransaction retrieves a specific inclusive transaction by ID.
 func (c *Client) GetInclusiveTransaction(ctx context.Context, inclusiveTransactionID string) (*types.InclusiveTransaction, error) {
 	var resp types.InclusiveTransaction
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/inclusives/%s", inclusiveTransactionID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/inclusives/%s", pathParam(inclusiveTransactionID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -64,7 +64,7 @@ func (c *Client) GetInclusiveTransaction(ctx context.Context, inclusiveTransacti
 // UndoInclusiveTransaction undoes an inclusive transaction.
 func (c *Client) UndoInclusiveTransaction(ctx context.Context, inclusiveTransactionID string, req *types.UndoInclusiveTransactionRequest) (*types.InclusiveTransactionUndoSuccess, error) {
 	var resp types.InclusiveTransactionUndoSuccess
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/inclusives/%s/undo", inclusiveTransactionID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/inclusives/%s/undo", pathParam(inclusiveTransactionID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

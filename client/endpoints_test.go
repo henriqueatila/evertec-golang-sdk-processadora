@@ -11,8 +11,8 @@ import (
 // ==================== INSTALLMENTS TESTS ====================
 
 func TestClient_SimulateInstallment(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentSimulation", http.StatusOK, map[string]interface{}{
-		"options": []map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentSimulation", http.StatusOK, map[string]any{
+		"options": []map[string]any{
 			{"installments": 3, "installmentValue": 3333},
 			{"installments": 6, "installmentValue": 1667},
 		},
@@ -36,7 +36,7 @@ func TestClient_SimulateInstallment(t *testing.T) {
 }
 
 func TestClient_CreateInstallmentRequest(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentRequest", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentRequest", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()
@@ -60,7 +60,7 @@ func TestClient_CreateInstallmentRequest(t *testing.T) {
 // ==================== VIRTUAL CARDS TESTS ====================
 
 func TestClient_CreateAccountVirtualCard(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/virtualcards", http.StatusCreated, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/virtualcards", http.StatusCreated, map[string]any{
 		"vCardId": "vcard123",
 	})
 	defer server.Close()
@@ -85,8 +85,8 @@ func TestClient_CreateAccountVirtualCard(t *testing.T) {
 }
 
 func TestClient_ListAccountVirtualCards(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/accounts/acc123/virtualcards/list", http.StatusOK, map[string]interface{}{
-		"virtualCards": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/accounts/acc123/virtualcards/list", http.StatusOK, map[string]any{
+		"virtualCards": []map[string]any{
 			{"vCardId": "vcard1"},
 			{"vCardId": "vcard2"},
 		},
@@ -106,7 +106,7 @@ func TestClient_ListAccountVirtualCards(t *testing.T) {
 }
 
 func TestClient_GetVirtualCard(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/virtualcards/vcard123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/virtualcards/vcard123", http.StatusOK, map[string]any{
 		"vCardId": "vcard123",
 		"status":  "ACTIVE",
 	})
@@ -125,7 +125,7 @@ func TestClient_GetVirtualCard(t *testing.T) {
 }
 
 func TestClient_CancelVirtualCard(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/virtualcards/vcard123/cancel", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/virtualcards/vcard123/cancel", http.StatusOK, map[string]any{
 		"status": "CANCELLED",
 	})
 	defer server.Close()
@@ -150,7 +150,7 @@ func TestClient_CancelVirtualCard(t *testing.T) {
 // ==================== HCE TESTS ====================
 
 func TestClient_ProvisionHCE(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/hce/provision", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/hce/provision", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()
@@ -158,7 +158,7 @@ func TestClient_ProvisionHCE(t *testing.T) {
 	client, _ := New(testConfig(server.URL))
 
 	req := &types.HCEProvisionRequest{
-		Mtv: map[string]interface{}{
+		Mtv: map[string]any{
 			"provData":       "encrypted_data",
 			"issuerDeviceId": "device123",
 		},
@@ -175,7 +175,7 @@ func TestClient_ProvisionHCE(t *testing.T) {
 }
 
 func TestClient_CreateHCECard(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/hce/acc123/createHCECard", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/hce/acc123/createHCECard", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()
@@ -197,7 +197,7 @@ func TestClient_CreateHCECard(t *testing.T) {
 // ==================== CAMPAIGNS/AGENTS TESTS ====================
 
 func TestClient_CreateCampaign(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/campaigns", http.StatusCreated, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/campaigns", http.StatusCreated, map[string]any{
 		"campaignId": "camp123",
 	})
 	defer server.Close()
@@ -220,8 +220,8 @@ func TestClient_CreateCampaign(t *testing.T) {
 }
 
 func TestClient_ListCampaigns(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/campaigns", http.StatusOK, map[string]interface{}{
-		"campaigns": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/campaigns", http.StatusOK, map[string]any{
+		"campaigns": []map[string]any{
 			{"campaignId": "camp1"},
 			{"campaignId": "camp2"},
 		},
@@ -241,7 +241,7 @@ func TestClient_ListCampaigns(t *testing.T) {
 }
 
 func TestClient_ListAgents(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/agents", http.StatusOK, []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/agents", http.StatusOK, []map[string]any{
 		{"agentId": "agent1"},
 		{"agentId": "agent2"},
 	})
@@ -262,7 +262,7 @@ func TestClient_ListAgents(t *testing.T) {
 // ==================== TRAVEL NOTICE TESTS ====================
 
 func TestClient_CreateTravelNotice(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/travelNotice", http.StatusCreated, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/travelNotice", http.StatusCreated, map[string]any{
 		"travelNoticeId": "tn123",
 	})
 	defer server.Close()
@@ -289,7 +289,7 @@ func TestClient_CreateTravelNotice(t *testing.T) {
 // ==================== HEALTH CHECK TESTS ====================
 
 func TestClient_GetStatus(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/status", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/status", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()

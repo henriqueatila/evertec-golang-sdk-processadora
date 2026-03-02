@@ -20,7 +20,7 @@ const (
 // ListReports lists available reports of a specific file type.
 func (c *Client) ListReports(ctx context.Context, fileType ReportFileType) (*types.ReportListResult, error) {
 	var resp types.ReportListResult
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/reports/list/%s", fileType), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/reports/list/%s", pathParam(string(fileType))), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -29,7 +29,7 @@ func (c *Client) ListReports(ctx context.Context, fileType ReportFileType) (*typ
 // GetReportTemporaryURL retrieves a temporary URL for downloading a report.
 func (c *Client) GetReportTemporaryURL(ctx context.Context, fileType ReportFileType, fileKey string) (*types.ReportTemporaryUrl, error) {
 	var resp types.ReportTemporaryUrl
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/reports/temporaryUrl/%s/%s", fileType, fileKey), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/reports/temporaryUrl/%s/%s", pathParam(string(fileType)), pathParam(fileKey)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

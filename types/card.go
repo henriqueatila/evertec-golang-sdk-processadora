@@ -21,7 +21,7 @@ type Card struct {
 	Profile            string         `json:"profile"`
 	Product            string         `json:"product"`
 	Status             CardStatus     `json:"status"`
-	BlockInformation   interface{}    `json:"blockInformation,omitempty"`
+	BlockInformation   any    `json:"blockInformation,omitempty"`
 	IssuanceDate       string         `json:"issuanceDate"`
 	TrackingID         string         `json:"trackingId,omitempty"`
 }
@@ -61,8 +61,8 @@ type CardholderData struct {
 	CardholderType              string                        `json:"cardholderType"`
 	FullName                    string                        `json:"fullName"`
 	CardData                    CardEmbossing                 `json:"cardData"`
-	IDentityDocumentNumber      string                        `json:"identityDocumentNumber"`
-	OtherIDentityDocumentNumber *PersonalIdentityDocumentInfo `json:"otherIdentityDocumentNumber,omitempty"`
+	IdentityDocumentNumber      string                        `json:"identityDocumentNumber"`
+	OtherIdentityDocumentNumber *PersonalIdentityDocumentInfo `json:"otherIdentityDocumentNumber,omitempty"`
 	BirthDate                   string                        `json:"birthDate"`
 	Nationality                 string                        `json:"nationality"`
 	Gender                      string                        `json:"gender,omitempty"`
@@ -93,7 +93,7 @@ type CardBlockRequest struct {
 
 // CardBlockResult from OpenAPI spec.
 type CardBlockResult struct {
-	ResultData        interface{} `json:"resultData"`
+	ResultData        any `json:"resultData"`
 	BlockedCard       Card        `json:"blocked_card"`
 	OtherChangedCards []string    `json:"otherChangedCards,omitempty"`
 }
@@ -118,7 +118,7 @@ type CardUnblockRequest struct {
 
 // CardUnblockResult from OpenAPI spec.
 type CardUnblockResult struct {
-	ResultData        interface{} `json:"resultData"`
+	ResultData        any `json:"resultData"`
 	UnblockedCard     Card        `json:"unblocked_card"`
 	OtherChangedCards []string    `json:"otherChangedCards,omitempty"`
 }
@@ -135,7 +135,7 @@ type CardReissueRequest struct {
 	ReturnAddress         string       `json:"returnAddress,omitempty"`
 	EmbossingName         string       `json:"embossingName,omitempty"`
 	Reason                string       `json:"reason,omitempty"`
-	CardDeliveryAddress   interface{}  `json:"cardDeliveryAddress,omitempty"`
+	CardDeliveryAddress   any  `json:"cardDeliveryAddress,omitempty"`
 	AlternativeBindingKey string       `json:"alternativeBindingKey,omitempty"`
 	SourceAudit           *SourceAudit `json:"sourceAudit,omitempty"`
 	BureauxID             *BureauxID   `json:"BureauxID,omitempty"`
@@ -143,7 +143,7 @@ type CardReissueRequest struct {
 
 // CardReissueResult from OpenAPI spec.
 type CardReissueResult struct {
-	ResultData        interface{}            `json:"resultData"`
+	ResultData        any            `json:"resultData"`
 	NewCardID         string                 `json:"newCardId"`
 	NewCardIDList     []SimpleCardDescriptor `json:"newCardIdList,omitempty"`
 	LinkID            string                 `json:"linkId,omitempty"`
@@ -163,7 +163,7 @@ type CardBlockAndReissueRequest struct {
 	EmbossingName         string       `json:"embossingName,omitempty"`
 	BlockCode             int          `json:"blockCode"`
 	Reason                string       `json:"reason,omitempty"`
-	CardDeliveryAddress   interface{}  `json:"cardDeliveryAddress,omitempty"`
+	CardDeliveryAddress   any  `json:"cardDeliveryAddress,omitempty"`
 	AlternativeBindingKey string       `json:"alternativeBindingKey,omitempty"`
 	SourceAudit           *SourceAudit `json:"sourceAudit,omitempty"`
 	BureauxID             *BureauxID   `json:"BureauxID,omitempty"`
@@ -171,7 +171,7 @@ type CardBlockAndReissueRequest struct {
 
 // CardBlockAndReissueResult from OpenAPI spec.
 type CardBlockAndReissueResult struct {
-	ResultData        interface{}            `json:"resultData"`
+	ResultData        any            `json:"resultData"`
 	BlockedCard       Card                   `json:"blocked_card"`
 	NewCardID         string                 `json:"newCardId"`
 	NewCardIDList     []SimpleCardDescriptor `json:"newCardIdList,omitempty"`
@@ -191,8 +191,8 @@ type NewCardRequest struct {
 	CourierID            *CourierID   `json:"CourierID,omitempty"`
 	CustomizedTrackingID string       `json:"customizedTrackingId,omitempty"`
 	ReturnAddress        string       `json:"returnAddress,omitempty"`
-	Cardholder           interface{}  `json:"cardholder,omitempty"`
-	CardDeliveryAddress  interface{}  `json:"cardDeliveryAddress,omitempty"`
+	Cardholder           any  `json:"cardholder,omitempty"`
+	CardDeliveryAddress  any  `json:"cardDeliveryAddress,omitempty"`
 	SourceAudit          *SourceAudit `json:"sourceAudit,omitempty"`
 	BureauxID            *BureauxID   `json:"BureauxID,omitempty"`
 }
@@ -200,7 +200,7 @@ type NewCardRequest struct {
 // NewCardrequestCreatedSuccessfully from OpenAPI spec.
 // Reference: https://paysmart-api.gitlab.io/processadora/PT-br/docs/criacao-de-cartoes-fisicos
 type NewCardrequestCreatedSuccessfully struct {
-	ResultData interface{}            `json:"resultData,omitempty"`
+	ResultData any            `json:"resultData,omitempty"`
 	CardID     string                 `json:"cardId"`
 	AccountID  string                 `json:"accountId,omitempty"`
 	CardIDList []SimpleCardDescriptor `json:"cardIdList,omitempty"`
@@ -219,7 +219,7 @@ type NewAnonymousCardRequest struct {
 	CourierID             *CourierID   `json:"CourierID,omitempty"`
 	CustomizedTrackingID  string       `json:"customizedTrackingId,omitempty"`
 	ReturnAddress         string       `json:"returnAddress,omitempty"`
-	CardDeliveryAddress   interface{}  `json:"cardDeliveryAddress"`
+	CardDeliveryAddress   any  `json:"cardDeliveryAddress"`
 	EmbossingName         string       `json:"embossingName,omitempty"`
 	SourceAudit           *SourceAudit `json:"sourceAudit,omitempty"`
 	BureauxID             *BureauxID   `json:"BureauxID,omitempty"`
@@ -227,7 +227,7 @@ type NewAnonymousCardRequest struct {
 
 // NewAnonymousCardRequestCreatedSuccessfully from OpenAPI spec.
 type NewAnonymousCardRequestCreatedSuccessfully struct {
-	ResultData    interface{}            `json:"resultData,omitempty"`
+	ResultData    any            `json:"resultData,omitempty"`
 	CardID        string                 `json:"cardId"`
 	AccountID     string                 `json:"accountId,omitempty"`
 	NewCardIDList []SimpleCardDescriptor `json:"newCardIdList,omitempty"`
@@ -246,7 +246,7 @@ type BindCardRequest struct {
 
 // BindCardResult from OpenAPI spec.
 type BindCardResult struct {
-	ResultData interface{} `json:"resultData"`
+	ResultData any `json:"resultData"`
 	Account    Account     `json:"account"`
 	BoundCards []string    `json:"boundCards,omitempty"`
 }
@@ -256,8 +256,8 @@ type BindAnonymousCardholderData struct {
 	CardholderType              string                        `json:"cardholderType"`
 	FullName                    string                        `json:"fullName"`
 	CardData                    CardEmbossing                 `json:"cardData"`
-	IDentityDocumentNumber      string                        `json:"identityDocumentNumber"`
-	OtherIDentityDocumentNumber *PersonalIdentityDocumentInfo `json:"otherIdentityDocumentNumber,omitempty"`
+	IdentityDocumentNumber      string                        `json:"identityDocumentNumber"`
+	OtherIdentityDocumentNumber *PersonalIdentityDocumentInfo `json:"otherIdentityDocumentNumber,omitempty"`
 	BirthDate                   string                        `json:"birthDate"`
 	Nationality                 string                        `json:"nationality"`
 	Gender                      string                        `json:"gender,omitempty"`
@@ -273,7 +273,7 @@ type AssociateAnonymousCardRequest struct {
 	PAN             string       `json:"PAN"`
 	CVV             string       `json:"CVV"`
 	DateExp         string       `json:"dateExp"`
-	Cardholder      interface{}  `json:"cardholder"`
+	Cardholder      any  `json:"cardholder"`
 	SourceAudit     *SourceAudit `json:"sourceAudit,omitempty"`
 }
 
@@ -291,7 +291,7 @@ type PinChangeRequest struct {
 
 // PinChangeCreatedSuccessfully from OpenAPI spec.
 type PinChangeCreatedSuccessfully struct {
-	ResultData                        interface{} `json:"resultData,omitempty"`
+	ResultData                        any `json:"resultData,omitempty"`
 	UpdatingLinkedPhysicalForVirtuals bool        `json:"updatingLinkedPhysicalForVirtuals,omitempty"`
 	OtherChangedCards                 []string    `json:"otherChangedCards,omitempty"`
 }
@@ -319,7 +319,7 @@ type PinValidateRequest struct {
 
 // PinValidateSuccessfully from OpenAPI spec.
 type PinValidateSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 }
 
 // FunctionalitiesInformation from OpenAPI spec.
@@ -333,7 +333,7 @@ type FunctionalitiesInformation struct {
 // GetFunctionBlockingResult from OpenAPI spec.
 type GetFunctionBlockingResult struct {
 	ResultData    *ResultData            `json:"resultData,omitempty"`
-	Functionality map[string]interface{} `json:"functionality,omitempty"`
+	Functionality map[string]any `json:"functionality,omitempty"`
 }
 
 // UpdateFunctionBlockingRequest from OpenAPI spec.
@@ -344,7 +344,7 @@ type UpdateFunctionBlockingRequest struct {
 // UpdateFunctionBlockingResult from OpenAPI spec.
 type UpdateFunctionBlockingResult struct {
 	ResultData    *ResultData            `json:"resultData,omitempty"`
-	Functionality map[string]interface{} `json:"functionality,omitempty"`
+	Functionality map[string]any `json:"functionality,omitempty"`
 }
 
 // UpdateCardRequest from OpenAPI spec.
@@ -354,5 +354,5 @@ type UpdateCardRequest struct {
 	AllowContactless   bool        `json:"allowContactless,omitempty"`
 	LinkedPhysicalCard string      `json:"linkedPhysicalCard,omitempty"`
 	ApplyToSingle      bool        `json:"applyToSingle,omitempty"`
-	Cardholder         interface{} `json:"cardholder,omitempty"`
+	Cardholder         any `json:"cardholder,omitempty"`
 }

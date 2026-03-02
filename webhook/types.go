@@ -48,7 +48,7 @@ type StatusInfo struct {
 type Event struct {
 	EventType EventType   `json:"eventType"`
 	EventID   string      `json:"eventId,omitempty"`
-	Data      interface{} `json:"data,omitempty"`
+	Data      any `json:"data,omitempty"`
 }
 
 // ========================================

@@ -15,10 +15,10 @@ func TestClient_CreateFraudNotification(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.FraudNotificationRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: create fraud notification",
@@ -27,7 +27,7 @@ func TestClient_CreateFraudNotification(t *testing.T) {
 				TransactionID: "tx123",
 				FraudType:     "CARD_NOT_PRESENT",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"fraudNotificationId": "fn123",
 				"status":              "CREATED",
 				"accountId":           "acc123",
@@ -35,7 +35,7 @@ func TestClient_CreateFraudNotification(t *testing.T) {
 			},
 			mockStatus: http.StatusCreated,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "acc123", body["accountId"], "accountId")
 				AssertEqual(t, "tx123", body["transactionId"], "transactionId")
 			},
@@ -48,7 +48,7 @@ func TestClient_CreateFraudNotification(t *testing.T) {
 				TransactionID: "tx456",
 				FraudType:     "LOST_CARD",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"fraudNotificationId": "fn456",
 				"status":              "CREATED",
 			},
@@ -80,7 +80,7 @@ func TestClient_CreateFraudNotification(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -106,14 +106,14 @@ func TestClient_ListFraudNotifications(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		wantLen      int
 	}{
 		{
 			name: "success: list fraud notifications",
-			mockResponse: []map[string]interface{}{
+			mockResponse: []map[string]any{
 				{"fraudNotificationId": "fn001", "status": "CREATED", "fraudType": "CARD_NOT_PRESENT"},
 				{"fraudNotificationId": "fn002", "status": "INVESTIGATING", "fraudType": "STOLEN_CARD"},
 				{"fraudNotificationId": "fn003", "status": "RESOLVED", "fraudType": "LOST_CARD"},
@@ -124,7 +124,7 @@ func TestClient_ListFraudNotifications(t *testing.T) {
 		},
 		{
 			name:         "success: empty list",
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 			wantLen:      0,

@@ -24,7 +24,7 @@ import (
 // ============================================================================
 
 // mockServer creates a test server that returns the given response (LEGACY)
-func mockServer(t *testing.T, method, path string, statusCode int, response interface{}) *httptest.Server {
+func mockServer(t *testing.T, method, path string, statusCode int, response any) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Verify method
 		if r.Method != method {
@@ -68,7 +68,7 @@ type TestCase[Req any, Resp any] struct {
 	Name           string
 	Request        Req
 	MockStatus     int
-	MockResponse   interface{}
+	MockResponse   any
 	MockError      *types.Error
 	WantErr        bool
 	WantErrType    error
@@ -82,7 +82,7 @@ type MockServerConfig struct {
 	Method       string
 	Path         string
 	Status       int
-	Response     interface{}
+	Response     any
 	Error        *types.Error
 	ValidateReq  func(t *testing.T, r *http.Request, body []byte)
 	Delay        time.Duration
@@ -351,7 +351,7 @@ func AssertAPIError(t *testing.T, err error, expectedStatus int) *APIError {
 }
 
 // AssertEqual fails if expected != actual.
-func AssertEqual(t *testing.T, expected, actual interface{}, field string) {
+func AssertEqual(t *testing.T, expected, actual any, field string) {
 	t.Helper()
 	if !reflect.DeepEqual(expected, actual) {
 		t.Errorf("%s = %v (%T), want %v (%T)", field, actual, actual, expected, expected)
@@ -359,7 +359,7 @@ func AssertEqual(t *testing.T, expected, actual interface{}, field string) {
 }
 
 // AssertNotNil fails if value is nil.
-func AssertNotNil(t *testing.T, value interface{}, name string) {
+func AssertNotNil(t *testing.T, value any, name string) {
 	t.Helper()
 	if value == nil || (reflect.ValueOf(value).Kind() == reflect.Ptr && reflect.ValueOf(value).IsNil()) {
 		t.Fatalf("%s is nil", name)
@@ -367,7 +367,7 @@ func AssertNotNil(t *testing.T, value interface{}, name string) {
 }
 
 // AssertNil fails if value is not nil.
-func AssertNil(t *testing.T, value interface{}, name string) {
+func AssertNil(t *testing.T, value any, name string) {
 	t.Helper()
 	if value != nil && !(reflect.ValueOf(value).Kind() == reflect.Ptr && reflect.ValueOf(value).IsNil()) {
 		t.Fatalf("%s should be nil, got %v", name, value)
@@ -375,9 +375,9 @@ func AssertNil(t *testing.T, value interface{}, name string) {
 }
 
 // AssertJSONContains verifies the JSON body contains expected fields.
-func AssertJSONContains(t *testing.T, body []byte, expected map[string]interface{}) {
+func AssertJSONContains(t *testing.T, body []byte, expected map[string]any) {
 	t.Helper()
-	var actual map[string]interface{}
+	var actual map[string]any
 	if err := json.Unmarshal(body, &actual); err != nil {
 		t.Fatalf("failed to unmarshal body: %v", err)
 	}
@@ -428,7 +428,7 @@ func NewAccountBuilder() *AccountBuilder {
 			AccountID:     "acc-test-001",
 			Status:        &status,
 			PsProductCode: "CREDIT_CARD",
-			AccountOwner: map[string]interface{}{
+			AccountOwner: map[string]any{
 				"fullName":               "Test User",
 				"identityDocumentNumber": "12345678901",
 			},
@@ -446,7 +446,7 @@ func (b *AccountBuilder) WithStatus(status types.AccountStatus) *AccountBuilder 
 	return b
 }
 
-func (b *AccountBuilder) WithAccountOwner(owner interface{}) *AccountBuilder {
+func (b *AccountBuilder) WithAccountOwner(owner any) *AccountBuilder {
 	b.account.AccountOwner = owner
 	return b
 }
@@ -610,9 +610,9 @@ func ShortContext(t *testing.T) (context.Context, context.CancelFunc) {
 // ============================================================================
 
 // ResultDataResponse creates a standard result data response.
-func ResultDataResponse(code int, description string) map[string]interface{} {
-	return map[string]interface{}{
-		"resultData": map[string]interface{}{
+func ResultDataResponse(code int, description string) map[string]any {
+	return map[string]any{
+		"resultData": map[string]any{
 			"resultCode":        code,
 			"resultDescription": description,
 		},
@@ -620,7 +620,7 @@ func ResultDataResponse(code int, description string) map[string]interface{} {
 }
 
 // SuccessResultData creates a success result data response.
-func SuccessResultData() map[string]interface{} {
+func SuccessResultData() map[string]any {
 	return ResultDataResponse(0, "Success")
 }
 
@@ -634,8 +634,8 @@ func ErrorResponse(code, message string, details ...string) *types.Error {
 }
 
 // PaginatedResponse creates a paginated list response.
-func PaginatedResponse(data interface{}, hasMore bool, totalCount int) map[string]interface{} {
-	return map[string]interface{}{
+func PaginatedResponse(data any, hasMore bool, totalCount int) map[string]any {
+	return map[string]any{
 		"data":       data,
 		"hasMore":    hasMore,
 		"totalCount": totalCount,
@@ -702,7 +702,7 @@ func EdgeCaseAmounts() []int64 {
 // ============================================================================
 
 // NewBenchmarkMockServer creates a minimal mock server for benchmarks.
-func NewBenchmarkMockServer(response interface{}) *httptest.Server {
+func NewBenchmarkMockServer(response any) *httptest.Server {
 	respBytes, _ := json.Marshal(response)
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

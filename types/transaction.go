@@ -25,11 +25,11 @@ type Transaction struct {
 	RemainingAmount                          *Amount                           `json:"remainingAmount,omitempty"`
 	RefundedAmount                           *Amount                           `json:"refundedAmount,omitempty"`
 	EntryMode                                *EntryMode                        `json:"entryMode,omitempty"`
-	Card                                     interface{}                       `json:"card,omitempty"`
+	Card                                     any                       `json:"card,omitempty"`
 	CancellingTransactionID                  string                            `json:"cancellingTransactionId,omitempty"`
 	CancellingTransactionIDs                 []string                          `json:"cancellingTransactionIds,omitempty"`
 	International                            bool                              `json:"international,omitempty"`
-	InternationalTransactionData             interface{}                       `json:"internationalTransactionData,omitempty"`
+	InternationalTransactionData             any                       `json:"internationalTransactionData,omitempty"`
 	AuthorizationAdvice                      bool                              `json:"authorizationAdvice,omitempty"`
 	MITAdditionalData                        *MITAdditionalData                `json:"mitAdditionalData,omitempty"`
 	AdditionalTerminalData                   *AdditionalTerminalData           `json:"additionalTerminalData,omitempty"`
@@ -48,9 +48,9 @@ type Transaction struct {
 	DisputeStatus                            *DisputeStatus                    `json:"disputeStatus,omitempty"`
 	Fees                                     []Fee                             `json:"fees,omitempty"`
 	Installments                             []Installment                     `json:"installments,omitempty"`
-	UndoData                                 interface{}                       `json:"undoData,omitempty"`
+	UndoData                                 any                       `json:"undoData,omitempty"`
 	OriginalTransaction                      string                            `json:"originalTransaction,omitempty"`
-	TransactionAuthorizationResponsePaysmart map[string]interface{}            `json:"transactionAuthorizationResponsePaysmart,omitempty"`
+	TransactionAuthorizationResponsePaysmart map[string]any            `json:"transactionAuthorizationResponsePaysmart,omitempty"`
 	TransferData                             *TransferData                     `json:"transferData,omitempty"`
 	FraudData                                *FraudData                        `json:"fraudData,omitempty"`
 	SettlementDate                           string                            `json:"settlementDate,omitempty"`
@@ -97,11 +97,11 @@ type TransactionQueryResult struct {
 	RemainingAmount                  *Amount                           `json:"remainingAmount,omitempty"`
 	RefundedAmount                   *Amount                           `json:"refundedAmount,omitempty"`
 	EntryMode                        *EntryMode                        `json:"entryMode,omitempty"`
-	Card                             interface{}                       `json:"card,omitempty"`
+	Card                             any                       `json:"card,omitempty"`
 	CancellingTransactionID          string                            `json:"cancellingTransactionId,omitempty"`
 	CancellingTransactionIDs         []string                          `json:"cancellingTransactionIds,omitempty"`
 	International                    bool                              `json:"international,omitempty"`
-	InternationalTransactionData     interface{}                       `json:"internationalTransactionData,omitempty"`
+	InternationalTransactionData     any                       `json:"internationalTransactionData,omitempty"`
 	AuthorizationAdvice              bool                              `json:"authorizationAdvice,omitempty"`
 	MITAdditionalData                *MITAdditionalData                `json:"mitAdditionalData,omitempty"`
 	AdditionalTerminalData           *AdditionalTerminalData           `json:"additionalTerminalData,omitempty"`
@@ -148,7 +148,7 @@ type TransactionInfo struct {
 type TransactionAuthorizationResponse struct {
 	Approved          bool        `json:"approved,omitempty"`
 	PartiallyApproved bool        `json:"partiallyApproved,omitempty"`
-	DenialReason      interface{} `json:"denialReason,omitempty"`
+	DenialReason      any `json:"denialReason,omitempty"`
 }
 
 // TransactionDenialReason from OpenAPI spec.
@@ -159,13 +159,13 @@ type TransactionDenialReason struct {
 
 // TransactionCreatedSuccessfully from OpenAPI spec.
 type TransactionCreatedSuccessfully struct {
-	ResultData      interface{}           `json:"resultData"`
+	ResultData      any           `json:"resultData"`
 	TransactionData TransactionDataResult `json:"transactionData"`
 }
 
 // AmountFraud from OpenAPI spec.
 type AmountFraud struct {
-	Amount        map[string]interface{} `json:"amount,omitempty"`
+	Amount        map[string]any `json:"amount,omitempty"`
 	DebitOrCredit string                 `json:"debit_or_credit,omitempty"`
 }
 
@@ -245,7 +245,7 @@ type NewTransactionRequest struct {
 	IssuerTransactionID string          `json:"issuerTransactionId,omitempty"`
 	TransactionType     TransactionType `json:"transactionType"`
 	SourceAudit         *SourceAudit    `json:"sourceAudit,omitempty"`
-	Amount              interface{}     `json:"amount"`
+	Amount              any     `json:"amount"`
 	Reason              string          `json:"reason"`
 }
 
@@ -255,7 +255,7 @@ type NewCreditRequest struct {
 	Description          string       `json:"description,omitempty"`
 	InclusionDate        string       `json:"inclusion_date,omitempty"`
 	EffectivePaymentDate string       `json:"effectivePaymentDate,omitempty"`
-	Amount               interface{}  `json:"amount"`
+	Amount               any  `json:"amount"`
 	CreditType           int          `json:"credit_type,omitempty"`
 	Type                 string       `json:"type,omitempty"`
 	SourceAudit          *SourceAudit `json:"sourceAudit,omitempty"`
@@ -265,7 +265,7 @@ type NewCreditRequest struct {
 type NewDebitRequest struct {
 	IssuerRequestID string       `json:"issuerRequestId,omitempty"`
 	Description     string       `json:"description,omitempty"`
-	Amount          interface{}  `json:"amount"`
+	Amount          any  `json:"amount"`
 	Type            string       `json:"type"`
 	SourceAudit     *SourceAudit `json:"sourceAudit,omitempty"`
 }
@@ -274,13 +274,13 @@ type NewDebitRequest struct {
 type Credit struct {
 	CreditID      string      `json:"creditId"`
 	InclusionDate string      `json:"inclusion_date"`
-	Amount        interface{} `json:"amount"`
+	Amount        any `json:"amount"`
 	CreditType    int         `json:"credit_type"`
 }
 
 // CreditCreatedSuccessfully from OpenAPI spec.
 type CreditCreatedSuccessfully struct {
-	ResultData interface{} `json:"resultData"`
+	ResultData any `json:"resultData"`
 	Credit     Credit      `json:"credit"`
 }
 
@@ -292,18 +292,18 @@ type CreditListResult struct {
 
 // ScheduledTransactionsResult from OpenAPI spec.
 type ScheduledTransactionsResult struct {
-	ResultData interface{}                `json:"resultData,omitempty"`
+	ResultData any                `json:"resultData,omitempty"`
 	Data       *ScheduledTransactionsList `json:"data,omitempty"`
 }
 
 // ScheduledTransactionsList from OpenAPI spec.
 type ScheduledTransactionsList struct {
-	ScheduledTransactions map[string]interface{} `json:"scheduled_transactions"`
+	ScheduledTransactions map[string]any `json:"scheduled_transactions"`
 }
 
 // ScheduledTransactionsErrorResult from OpenAPI spec.
 type ScheduledTransactionsErrorResult struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 }
 
 // FraudData - A presença deste campo indica que um Score de Fraude é entregue ao Emi

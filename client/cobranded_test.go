@@ -15,10 +15,10 @@ func TestClient_CreateCobranded(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.MerchantVanRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: create cobranded merchant",
@@ -30,14 +30,14 @@ func TestClient_CreateCobranded(t *testing.T) {
 				FantasyName:     "Test Merchant",
 				MerchantVanCode: "VAN001",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"document":  "12345678000199",
 				"legalName": "Test Merchant LTDA",
 				"status":    "ACTIVE",
 			},
 			mockStatus: http.StatusCreated,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "12345678000199", body["document"], "document")
 				AssertEqual(t, "Test Merchant LTDA", body["legalName"], "legalName")
 			},
@@ -51,7 +51,7 @@ func TestClient_CreateCobranded(t *testing.T) {
 				LegalName:       "Another Merchant SA",
 				MerchantVanCode: "VAN002",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"document":  "98765432000199",
 				"legalName": "Another Merchant SA",
 				"status":    "ACTIVE",
@@ -99,7 +99,7 @@ func TestClient_CreateCobranded(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}

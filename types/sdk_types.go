@@ -538,7 +538,7 @@ type CreditAdjustmentRequest struct {
 
 // AdjustmentResponse represents the response from an adjustment operation.
 type AdjustmentResponse struct {
-	ResultData    interface{} `json:"resultData,omitempty"`
+	ResultData    any `json:"resultData,omitempty"`
 	TransactionID string      `json:"transactionId,omitempty"`
 }
 
@@ -560,7 +560,7 @@ type GetDataprepStatusResponse = DataprepStatusResult
 
 // RegisterPaymentResponse represents the response from registering a payment.
 type RegisterPaymentResponse struct {
-	ResultData    interface{} `json:"resultData,omitempty"`
+	ResultData    any `json:"resultData,omitempty"`
 	TransactionID string      `json:"transactionId,omitempty"`
 	Status        string      `json:"status,omitempty"`
 }

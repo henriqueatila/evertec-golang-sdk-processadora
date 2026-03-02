@@ -12,7 +12,7 @@ import (
 
 // ListAccountTransactions lists transactions for an account.
 func (c *Client) ListAccountTransactions(ctx context.Context, accountID string, req *types.ListTransactionsRequest) (*types.ListTransactionsResponse, error) {
-	path := fmt.Sprintf("/accounts/%s/transactions", accountID)
+	path := fmt.Sprintf("/accounts/%s/transactions", pathParam(accountID))
 	if req != nil {
 		path = path + "?" + buildTransactionQuery(req)
 	}
@@ -27,7 +27,7 @@ func (c *Client) ListAccountTransactions(ctx context.Context, accountID string, 
 // GetTransaction retrieves a transaction by ID.
 func (c *Client) GetTransaction(ctx context.Context, transactionID string) (*types.Transaction, error) {
 	var resp types.Transaction
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/transactions/%s", transactionID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/transactions/%s", pathParam(transactionID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

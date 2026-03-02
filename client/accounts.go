@@ -22,7 +22,7 @@ func (c *Client) CreateAccount(ctx context.Context, req *types.CreateAccountRequ
 // GetAccount retrieves an account by ID.
 func (c *Client) GetAccount(ctx context.Context, accountID string) (*types.Account, error) {
 	var resp types.Account
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -30,17 +30,17 @@ func (c *Client) GetAccount(ctx context.Context, accountID string) (*types.Accou
 
 // UpdateAccount updates an account.
 func (c *Client) UpdateAccount(ctx context.Context, accountID string, req *types.UpdateAccountRequest) error {
-	return c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s", accountID), req, nil)
+	return c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s", pathParam(accountID)), req, nil)
 }
 
 // BlockAccount blocks an account.
 func (c *Client) BlockAccount(ctx context.Context, accountID string, req *types.BlockAccountRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/blockAccount", accountID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/blockAccount", pathParam(accountID)), req, nil)
 }
 
 // UnblockAccount unblocks an account.
 func (c *Client) UnblockAccount(ctx context.Context, accountID string, req *types.UnblockAccountRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/unblockAccount", accountID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/unblockAccount", pathParam(accountID)), req, nil)
 }
 
 // ListAccounts retrieves accounts based on filters.
@@ -91,7 +91,7 @@ func (c *Client) ListAccounts(ctx context.Context, params *types.ListAccountsPar
 // Reference: https://paysmart-api.gitlab.io/processadora/PT-br/docs/limits-api
 func (c *Client) GetAccountBalance(ctx context.Context, accountID string) (*types.AccountBalance, error) {
 	var resp types.AccountBalance
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/balance", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/balance", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -99,13 +99,13 @@ func (c *Client) GetAccountBalance(ctx context.Context, accountID string) (*type
 
 // CancelAccount cancels an account.
 func (c *Client) CancelAccount(ctx context.Context, accountID string, req *types.CancelAccountRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/cancelAccount", accountID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/cancelAccount", pathParam(accountID)), req, nil)
 }
 
 // ListAccountCards retrieves all cards for an account.
 func (c *Client) ListAccountCards(ctx context.Context, accountID string) ([]types.CardDetails, error) {
 	var resp []types.CardDetails
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/cards", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/cards", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -114,7 +114,7 @@ func (c *Client) ListAccountCards(ctx context.Context, accountID string) ([]type
 // GetCreditVerificationStatus retrieves credit verification status for an account.
 func (c *Client) GetCreditVerificationStatus(ctx context.Context, accountID string) (*types.CreditVerificationStatus, error) {
 	var resp types.CreditVerificationStatus
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/creditVerificationStatus", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/creditVerificationStatus", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -123,7 +123,7 @@ func (c *Client) GetCreditVerificationStatus(ctx context.Context, accountID stri
 // ListScheduledTransactions retrieves scheduled transactions for an account.
 func (c *Client) ListScheduledTransactions(ctx context.Context, accountID string) ([]types.ScheduledTransaction, error) {
 	var resp []types.ScheduledTransaction
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/findScheduledTransactions", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/findScheduledTransactions", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -132,7 +132,7 @@ func (c *Client) ListScheduledTransactions(ctx context.Context, accountID string
 // CreateCredit creates a credit transaction for an account.
 func (c *Client) CreateCredit(ctx context.Context, accountID string, req *types.CreateCreditRequest) (*types.CreditTransaction, error) {
 	var resp types.CreditTransaction
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/transactions/credits", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/transactions/credits", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -141,7 +141,7 @@ func (c *Client) CreateCredit(ctx context.Context, accountID string, req *types.
 // ListCredits retrieves all credit transactions for an account.
 func (c *Client) ListCredits(ctx context.Context, accountID string) (*types.ListCreditsResponse, error) {
 	var resp types.ListCreditsResponse
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/transactions/credits", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/transactions/credits", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -150,7 +150,7 @@ func (c *Client) ListCredits(ctx context.Context, accountID string) (*types.List
 // CreateDebit creates a debit transaction for an account.
 func (c *Client) CreateDebit(ctx context.Context, accountID string, req *types.CreateDebitRequest) (*types.CreditTransaction, error) {
 	var resp types.CreditTransaction
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/transactions/debits", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/transactions/debits", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

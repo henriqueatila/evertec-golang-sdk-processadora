@@ -15,24 +15,24 @@ func TestClient_ParseQRCode(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.ParseQrCodeParams
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: parse QR code",
 			request: &types.ParseQrCodeParams{
 				QRCode: "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426614174000",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"type":     "PIX",
-				"merchant": map[string]interface{}{"name": "Test Merchant"},
-				"amount":   map[string]interface{}{"amount": 10000, "currencyCode": 986},
+				"merchant": map[string]any{"name": "Test Merchant"},
+				"amount":   map[string]any{"amount": 10000, "currencyCode": 986},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertNotNil(t, body["qrCode"], "qrCode")
 			},
 		},
@@ -41,9 +41,9 @@ func TestClient_ParseQRCode(t *testing.T) {
 			request: &types.ParseQrCodeParams{
 				QRCode: "static-qr-code-data",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"type":     "STATIC",
-				"merchant": map[string]interface{}{"name": "Static Merchant"},
+				"merchant": map[string]any{"name": "Static Merchant"},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -71,7 +71,7 @@ func TestClient_ParseQRCode(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -98,7 +98,7 @@ func TestClient_SimplePayment(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.SimplePaymentCardParams
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -108,7 +108,7 @@ func TestClient_SimplePayment(t *testing.T) {
 				VCardID: "vcard123",
 				QRCode:  "00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-426614174000",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId":     "tx123",
 				"status":            "APPROVED",
 				"authorizationCode": "AUTH123",
@@ -122,7 +122,7 @@ func TestClient_SimplePayment(t *testing.T) {
 				VCardID: "vcard456",
 				QRCode:  "static-qr-code-data",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId":     "tx456",
 				"status":            "APPROVED",
 				"authorizationCode": "AUTH456",
@@ -185,7 +185,7 @@ func TestClient_TransactionCallback(t *testing.T) {
 		name          string
 		transactionID string
 		request       *types.TransactionCallbackRequest
-		mockResponse  interface{}
+		mockResponse  any
 		mockStatus    int
 		wantErr       bool
 	}{
@@ -196,7 +196,7 @@ func TestClient_TransactionCallback(t *testing.T) {
 				Status:       "COMPLETED",
 				ResponseCode: "00",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId": "tx123",
 				"status":        "COMPLETED",
 				"processed":     true,
@@ -212,7 +212,7 @@ func TestClient_TransactionCallback(t *testing.T) {
 				ResponseCode: "51",
 				Message:      "Insufficient funds",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId": "tx456",
 				"status":        "FAILED",
 				"processed":     true,

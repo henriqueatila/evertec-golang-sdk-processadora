@@ -12,7 +12,7 @@ import (
 // This endpoint is part of the Limits API (Pós-Pago).
 func (c *Client) UpdateMaxCreditLimits(ctx context.Context, accountID string, req *types.MaxCreditLimitsRequest) (*types.MaxCreditLimitsResponse, error) {
 	var resp types.MaxCreditLimitsResponse
-	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s/maxCreditLimits", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s/maxCreditLimits", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -22,7 +22,7 @@ func (c *Client) UpdateMaxCreditLimits(ctx context.Context, accountID string, re
 // This endpoint is part of the Limits API (Pós-Pago).
 func (c *Client) ChangeUsableCreditLimits(ctx context.Context, accountID string, req *types.ChangeUsableCreditLimitsRequest) (*types.ChangeUsableCreditLimitsResponse, error) {
 	var resp types.ChangeUsableCreditLimitsResponse
-	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s/changeUsableCreditLimits", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/accounts/%s/changeUsableCreditLimits", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

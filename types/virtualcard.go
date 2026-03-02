@@ -20,7 +20,7 @@ type CreateVirtualCardRequest struct {
 // CreateVirtualCardResponse from OpenAPI spec.
 // Reference: https://paysmart-api.gitlab.io/processadora/PT-br/docs/criacao-de-cartoes-virtuais
 type CreateVirtualCardResponse struct {
-	ResultData      interface{}                     `json:"resultData,omitempty"`
+	ResultData      any                     `json:"resultData,omitempty"`
 	VirtualCard     *VirtualCardDescriptor          `json:"virtualCard,omitempty"`
 	VirtualCardList []ExtendedVirtualCardDescriptor `json:"virtualCardList,omitempty"`
 	LinkID          string                          `json:"linkId,omitempty"`
@@ -28,22 +28,22 @@ type CreateVirtualCardResponse struct {
 
 // GetVirtualCardResponse from OpenAPI spec.
 type GetVirtualCardResponse struct {
-	ResultData  interface{} `json:"resultData,omitempty"`
-	Virtual     interface{} `json:"virtual,omitempty"`
-	Constraints interface{} `json:"constraints,omitempty"`
-	Info        interface{} `json:"info,omitempty"`
+	ResultData  any `json:"resultData,omitempty"`
+	Virtual     any `json:"virtual,omitempty"`
+	Constraints any `json:"constraints,omitempty"`
+	Info        any `json:"info,omitempty"`
 }
 
 // ListVirtualCardsResponse from OpenAPI spec.
 type ListVirtualCardsResponse struct {
-	ResultData        interface{}               `json:"resultData,omitempty"`
+	ResultData        any               `json:"resultData,omitempty"`
 	VirtualCardsCount int                       `json:"virtual_cards_count,omitempty"`
 	VirtualCards      []ComposedVirtualCardInfo `json:"virtual_cards,omitempty"`
 }
 
 // VirtualCardInfo from OpenAPI spec.
 type VirtualCardInfo struct {
-	StatusCode        interface{} `json:"statusCode,omitempty"`
+	StatusCode        any `json:"statusCode,omitempty"`
 	CardID            string      `json:"cardId,omitempty"`
 	StatusDescription string      `json:"statusDescription,omitempty"`
 }
@@ -75,9 +75,9 @@ type ExtendedVirtualCardDescriptor struct {
 
 // ComposedVirtualCardInfo from OpenAPI spec.
 type ComposedVirtualCardInfo struct {
-	Virtual     interface{} `json:"virtual,omitempty"`
-	Constraints interface{} `json:"constraints,omitempty"`
-	Info        interface{} `json:"info,omitempty"`
+	Virtual     any `json:"virtual,omitempty"`
+	Constraints any `json:"constraints,omitempty"`
+	Info        any `json:"info,omitempty"`
 }
 
 // SimpleCardDescriptor from OpenAPI spec.
@@ -103,14 +103,14 @@ type CancelVirtualCardRequest struct {
 
 // CancelVirtualCardResponse from OpenAPI spec.
 type CancelVirtualCardResponse struct {
-	ResultData           interface{}              `json:"resultData,omitempty"`
+	ResultData           any              `json:"resultData,omitempty"`
 	CancelledVirtualCard *ComposedVirtualCardInfo `json:"cancelledVirtualCard,omitempty"`
 }
 
 // ModifyVirtualCardResponse from OpenAPI spec.
 type ModifyVirtualCardResponse struct {
-	ResultData  interface{} `json:"resultData,omitempty"`
-	Virtual     interface{} `json:"virtual,omitempty"`
-	Constraints interface{} `json:"constraints,omitempty"`
-	Info        interface{} `json:"info,omitempty"`
+	ResultData  any `json:"resultData,omitempty"`
+	Virtual     any `json:"virtual,omitempty"`
+	Constraints any `json:"constraints,omitempty"`
+	Info        any `json:"info,omitempty"`
 }

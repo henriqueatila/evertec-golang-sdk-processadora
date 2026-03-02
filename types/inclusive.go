@@ -20,18 +20,18 @@ type InclusiveTransactionRequest struct {
 	ReasonCode    string      `json:"reasonCode"`
 	Text          string      `json:"text"`
 	Partial       bool        `json:"partial"`
-	Amount        interface{} `json:"amount,omitempty"`
+	Amount        any `json:"amount,omitempty"`
 }
 
 // InclusiveTransactionCreationSuccess from OpenAPI spec.
 type InclusiveTransactionCreationSuccess struct {
-	ResultData           interface{} `json:"resultData,omitempty"`
-	InclusiveTransaction interface{} `json:"inclusiveTransaction,omitempty"`
+	ResultData           any `json:"resultData,omitempty"`
+	InclusiveTransaction any `json:"inclusiveTransaction,omitempty"`
 }
 
 // InclusiveTransactionUndoSuccess from OpenAPI spec.
 type InclusiveTransactionUndoSuccess struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 }
 
 // InclusiveTransactionsListResult from OpenAPI spec.

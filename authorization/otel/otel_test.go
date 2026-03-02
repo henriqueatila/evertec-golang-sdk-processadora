@@ -392,8 +392,8 @@ func TestTracingHook_DurationTracking(t *testing.T) {
 }
 
 // Helper function to convert attributes to map
-func attributesToMap(attrs []attribute.KeyValue) map[string]interface{} {
-	result := make(map[string]interface{})
+func attributesToMap(attrs []attribute.KeyValue) map[string]any {
+	result := make(map[string]any)
 	for _, attr := range attrs {
 		result[string(attr.Key)] = attr.Value.AsInterface()
 	}

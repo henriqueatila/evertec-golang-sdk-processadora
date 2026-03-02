@@ -11,7 +11,7 @@ import (
 // SimulateInstallment simulates installment payment options for an account.
 func (c *Client) SimulateInstallment(ctx context.Context, accountID string, req *types.InstallmentSimulationBody) (*types.InstallmentSimulationResult, error) {
 	var resp types.InstallmentSimulationResult
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/installmentSimulation", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/installmentSimulation", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -20,7 +20,7 @@ func (c *Client) SimulateInstallment(ctx context.Context, accountID string, req 
 // GetInstallmentOptions retrieves available installment options for an account.
 func (c *Client) GetInstallmentOptions(ctx context.Context, accountID string) (*types.InstallmentSimulationResult, error) {
 	var resp types.InstallmentSimulationResult
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/installmentSimulation", accountID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/accounts/%s/installmentSimulation", pathParam(accountID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -29,7 +29,7 @@ func (c *Client) GetInstallmentOptions(ctx context.Context, accountID string) (*
 // CreateInstallmentRequest creates an installment request for an account.
 func (c *Client) CreateInstallmentRequest(ctx context.Context, accountID string, req *types.InstallmentRequest) (*types.ResultData, error) {
 	var resp types.ResultData
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/installmentRequest", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/installmentRequest", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -38,7 +38,7 @@ func (c *Client) CreateInstallmentRequest(ctx context.Context, accountID string,
 // SimulateAdvancePayment simulates advance payment for installments on a transaction.
 func (c *Client) SimulateAdvancePayment(ctx context.Context, accountID, transactionID string, req *types.AdvancePaymentRequest) (*types.InstallmentSimulationResult, error) {
 	var resp types.InstallmentSimulationResult
-	path := fmt.Sprintf("/accounts/%s/installmentAdvanceSimulation/%s", accountID, transactionID)
+	path := fmt.Sprintf("/accounts/%s/installmentAdvanceSimulation/%s", pathParam(accountID), pathParam(transactionID))
 	if err := c.request(ctx, http.MethodPost, path, req, &resp); err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func (c *Client) SimulateAdvancePayment(ctx context.Context, accountID, transact
 // RequestAdvancePayment requests advance payment for installments on a transaction.
 func (c *Client) RequestAdvancePayment(ctx context.Context, accountID, transactionID string, req *types.AdvancePaymentRequest) (*types.ResultData, error) {
 	var resp types.ResultData
-	path := fmt.Sprintf("/accounts/%s/installmentAdvanceRequest/%s", accountID, transactionID)
+	path := fmt.Sprintf("/accounts/%s/installmentAdvanceRequest/%s", pathParam(accountID), pathParam(transactionID))
 	if err := c.request(ctx, http.MethodPost, path, req, &resp); err != nil {
 		return nil, err
 	}

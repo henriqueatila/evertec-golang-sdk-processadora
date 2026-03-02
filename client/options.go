@@ -30,6 +30,14 @@ func WithDefaultLogger() Option {
 	}
 }
 
+// WithMaxResponseBody sets the maximum response body size in bytes.
+// Responses exceeding this limit will be truncated. Default is 10 MB.
+func WithMaxResponseBody(size int64) Option {
+	return func(c *Config) {
+		c.MaxResponseBody = size
+	}
+}
+
 // WithHooks adds observability hooks to the client.
 // Hooks are called before and after each request, useful for
 // metrics, tracing, or custom logging.

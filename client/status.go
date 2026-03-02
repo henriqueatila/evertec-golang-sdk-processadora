@@ -38,7 +38,7 @@ func (c *Client) ListDataprepStatus(ctx context.Context) (*types.ListDataprepSta
 // GetDataprepStatus retrieves the status of a specific dataprep file.
 func (c *Client) GetDataprepStatus(ctx context.Context, filename string) (*types.GetDataprepStatusResponse, error) {
 	var resp types.GetDataprepStatusResponse
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/dataprepstatus/%s", filename), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/dataprepstatus/%s", pathParam(filename)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

@@ -75,7 +75,7 @@ func TestLoggingHook_AfterAuthorization_Approved(t *testing.T) {
 	hook.AfterAuthorization(context.Background(), req, resp)
 
 	// Parse log output
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log: %v\nLog: %s", err, buf.String())
 	}
@@ -95,7 +95,7 @@ func TestLoggingHook_AfterAuthorization_Approved(t *testing.T) {
 	}
 
 	// Verify required fields
-	expectedFields := map[string]interface{}{
+	expectedFields := map[string]any{
 		"path":           "/purchases",
 		"operation":      "purchase",
 		"status":         float64(200),
@@ -139,7 +139,7 @@ func TestLoggingHook_AfterAuthorization_Declined(t *testing.T) {
 
 	hook.AfterAuthorization(context.Background(), req, resp)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log: %v", err)
 	}
@@ -178,7 +178,7 @@ func TestLoggingHook_AfterAuthorization_Error(t *testing.T) {
 
 	hook.AfterAuthorization(context.Background(), req, resp)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log: %v", err)
 	}
@@ -214,7 +214,7 @@ func TestLoggingHook_AfterAuthorization_ServerError(t *testing.T) {
 
 	hook.AfterAuthorization(context.Background(), req, resp)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log: %v", err)
 	}
@@ -277,7 +277,7 @@ func TestLoggingHook_AfterAuthorization_AmountWithoutCurrency(t *testing.T) {
 
 	hook.AfterAuthorization(context.Background(), req, resp)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log: %v", err)
 	}

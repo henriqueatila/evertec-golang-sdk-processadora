@@ -14,19 +14,19 @@ func TestClient_GetTransaction(t *testing.T) {
 	tests := []struct {
 		name          string
 		transactionID string
-		mockResponse  interface{}
+		mockResponse  any
 		mockStatus    int
 		wantErr       bool
 	}{
 		{
 			name:          "success: get transaction",
 			transactionID: "tx123",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId": "tx123",
 				"status":        "COMPLETED",
 				"type":          "PURCHASE",
-				"amount":        map[string]interface{}{"amount": 10000, "currencyCode": 986},
-				"merchant": map[string]interface{}{
+				"amount":        map[string]any{"amount": 10000, "currencyCode": 986},
+				"merchant": map[string]any{
 					"name": "Test Merchant",
 					"mcc":  "5411",
 				},
@@ -37,7 +37,7 @@ func TestClient_GetTransaction(t *testing.T) {
 		{
 			name:          "success: get pending transaction",
 			transactionID: "tx456",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"transactionId": "tx456",
 				"status":        "PENDING",
 				"type":          "AUTHORIZATION",
@@ -86,16 +86,16 @@ func TestClient_ListAllTransactions(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.ListAllTransactionsRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:    "success: list all transactions without filters",
 			request: nil,
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": true,
-				"transactions": []map[string]interface{}{
+				"transactions": []map[string]any{
 					{"transactionId": "tx001", "transactionStatus": "COMPLETED"},
 					{"transactionId": "tx002", "transactionStatus": "PENDING"},
 				},
@@ -108,9 +108,9 @@ func TestClient_ListAllTransactions(t *testing.T) {
 			request: &types.ListAllTransactionsRequest{
 				Limit: 10,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": false,
-				"transactions": []map[string]interface{}{
+				"transactions": []map[string]any{
 					{"transactionId": "tx001"},
 				},
 			},
@@ -123,9 +123,9 @@ func TestClient_ListAllTransactions(t *testing.T) {
 				BeginningDate: "2024-01-01",
 				EndingDate:    "2024-12-31",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":      false,
-				"transactions": []map[string]interface{}{},
+				"transactions": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -136,9 +136,9 @@ func TestClient_ListAllTransactions(t *testing.T) {
 				StartingAfter: "tx100",
 				EndingBefore:  "tx200",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":      false,
-				"transactions": []map[string]interface{}{},
+				"transactions": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -158,9 +158,9 @@ func TestClient_ListAllTransactions(t *testing.T) {
 				MaxAmount:             100000,
 				TransactionEntryMode:  "CHIP",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": false,
-				"transactions": []map[string]interface{}{
+				"transactions": []map[string]any{
 					{"transactionId": "tx001"},
 				},
 			},
@@ -209,7 +209,7 @@ func TestClient_ListAccountTransactions(t *testing.T) {
 		name         string
 		accountID    string
 		request      *types.ListTransactionsRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -217,9 +217,9 @@ func TestClient_ListAccountTransactions(t *testing.T) {
 			name:      "success: list account transactions",
 			accountID: "acc123",
 			request:   nil,
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": true,
-				"transactions": []map[string]interface{}{
+				"transactions": []map[string]any{
 					{"transactionId": "tx001"},
 				},
 			},
@@ -237,9 +237,9 @@ func TestClient_ListAccountTransactions(t *testing.T) {
 				Limit:             20,
 				StartingAfter:     "tx100",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":      false,
-				"transactions": []map[string]interface{}{},
+				"transactions": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,

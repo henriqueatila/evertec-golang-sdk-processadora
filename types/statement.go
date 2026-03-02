@@ -7,8 +7,8 @@ type Statement struct {
 	PaymentDue                              string           `json:"paymentDue,omitempty"`
 	PaymentDueActual                        string           `json:"paymentDueActual,omitempty"`
 	CloseDate                               string           `json:"closeDate,omitempty"`
-	Balance                                 interface{}      `json:"balance,omitempty"`
-	MinimumPaymentDue                       interface{}      `json:"minimumPaymentDue,omitempty"`
+	Balance                                 any      `json:"balance,omitempty"`
+	MinimumPaymentDue                       any      `json:"minimumPaymentDue,omitempty"`
 	TransactionsList                        []StatementEntry `json:"transactionsList,omitempty"`
 	AdditionalTransactionsList              []StatementEntry `json:"additionalTransactionsList,omitempty"`
 	OutOfStatementPeriodTransactions        []StatementEntry `json:"outOfStatementPeriodTransactions,omitempty"`
@@ -16,22 +16,22 @@ type Statement struct {
 	LastTransactionInserted                 string           `json:"lastTransactionInserted,omitempty"`
 	OpeningDateTime                         string           `json:"openingDateTime,omitempty"`
 	StatementClosingDateTime                string           `json:"statementClosingDateTime,omitempty"`
-	ChargesInNextStatementForMinimumPayment interface{}      `json:"chargesInNextStatementForMinimumPayment,omitempty"`
+	ChargesInNextStatementForMinimumPayment any      `json:"chargesInNextStatementForMinimumPayment,omitempty"`
 	StatementID                             string           `json:"statementId,omitempty"`
 	LastStatementID                         string           `json:"lastStatementId,omitempty"`
 	InterestCalculationMemory               []DailyFeeEntry  `json:"interestCalculationMemory,omitempty"`
 	LastUpdated                             string           `json:"lastUpdated,omitempty"`
-	PaymentsAndCredits                      interface{}      `json:"paymentsAndCredits,omitempty"`
-	PurchasesAndDebits                      interface{}      `json:"purchasesAndDebits,omitempty"`
-	CET                                     interface{}      `json:"CET,omitempty"`
-	ResultData                              interface{}      `json:"resultData"`
+	PaymentsAndCredits                      any      `json:"paymentsAndCredits,omitempty"`
+	PurchasesAndDebits                      any      `json:"purchasesAndDebits,omitempty"`
+	CET                                     any      `json:"CET,omitempty"`
+	ResultData                              any      `json:"resultData"`
 	QueryDate                               string           `json:"query_date,omitempty"`
 	SourceAudit                             *SourceAudit     `json:"sourceAudit,omitempty"`
 }
 
 // StatementList from OpenAPI spec.
 type StatementList struct {
-	ResultData    interface{} `json:"resultData,omitempty"`
+	ResultData    any `json:"resultData,omitempty"`
 	StatementList []Statement `json:"statementList,omitempty"`
 	StartingAfter string      `json:"startingAfter,omitempty"`
 }
@@ -42,7 +42,7 @@ type StatementEntry struct {
 	CardID                   string      `json:"cardId,omitempty"`
 	LastFourDigits           string      `json:"last_four_digits"`
 	InternationalTransaction bool        `json:"internationalTransaction"`
-	TransactionDate          interface{} `json:"transactionDate"`
+	TransactionDate          any `json:"transactionDate"`
 	TransactionDescription   string      `json:"transactionDescription"`
 	Amount                   Amount      `json:"amount"`
 	AmountDollar             *Amount     `json:"amountDollar,omitempty"`
@@ -55,11 +55,11 @@ type StatementTransactionItem struct {
 	CardID                   string      `json:"cardId,omitempty"`
 	LastFourDigits           string      `json:"last_four_digits,omitempty"`
 	InternationalTransaction bool        `json:"internationalTransaction,omitempty"`
-	TransactionDate          interface{} `json:"transactionDate,omitempty"`
+	TransactionDate          any `json:"transactionDate,omitempty"`
 	TransactionDescription   string      `json:"transactionDescription,omitempty"`
 	TransactionType          string      `json:"transactionType,omitempty"`
-	Amount                   interface{} `json:"amount,omitempty"`
-	AmountDollar             interface{} `json:"amountDollar,omitempty"`
+	Amount                   any `json:"amount,omitempty"`
+	AmountDollar             any `json:"amountDollar,omitempty"`
 	DebitOrCredit            string      `json:"debit_or_credit,omitempty"`
 }
 
@@ -68,12 +68,12 @@ type OpenStatement struct {
 	AccountID                    string           `json:"accountId"`
 	PaymentDue                   string           `json:"paymentDue"`
 	CloseDate                    string           `json:"closeDate,omitempty"`
-	PreviousBalance              interface{}      `json:"previousBalance,omitempty"`
-	Balance                      interface{}      `json:"balance"`
-	CreditLimit                  interface{}      `json:"creditLimit"`
-	WithdrawalCreditLimit        interface{}      `json:"withdrawalCreditLimit"`
-	CurrentCreditLimit           interface{}      `json:"currentCreditLimit"`
-	CurrentWithdrawalCreditLimit interface{}      `json:"currentWithdrawalCreditLimit"`
+	PreviousBalance              any      `json:"previousBalance,omitempty"`
+	Balance                      any      `json:"balance"`
+	CreditLimit                  any      `json:"creditLimit"`
+	WithdrawalCreditLimit        any      `json:"withdrawalCreditLimit"`
+	CurrentCreditLimit           any      `json:"currentCreditLimit"`
+	CurrentWithdrawalCreditLimit any      `json:"currentWithdrawalCreditLimit"`
 	TransactionsList             []StatementEntry `json:"transactionsList"`
 	FirstTransactionInserted     string           `json:"firstTransactionInserted,omitempty"`
 	OpeningDateTime              string           `json:"openingDateTime,omitempty"`
@@ -85,7 +85,7 @@ type OpenStatement struct {
 type FutureStatement struct {
 	AccountID        string           `json:"accountId"`
 	PaymentDue       string           `json:"paymentDue"`
-	Balance          interface{}      `json:"balance"`
+	Balance          any      `json:"balance"`
 	TransactionsList []StatementEntry `json:"transactionsList"`
 	QueryDate        string           `json:"query_date,omitempty"`
 	SourceAudit      *SourceAudit     `json:"sourceAudit,omitempty"`
@@ -93,6 +93,6 @@ type FutureStatement struct {
 
 // FutureStatementList from OpenAPI spec.
 type FutureStatementList struct {
-	ResultData    interface{}       `json:"resultData,omitempty"`
+	ResultData    any       `json:"resultData,omitempty"`
 	StatementList []FutureStatement `json:"statementList,omitempty"`
 }

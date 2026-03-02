@@ -130,7 +130,7 @@ func TestWithHooks_Integration(t *testing.T) {
 
 	server := NewMockServer(t, &MockServerConfig{
 		Status:   200,
-		Response: map[string]interface{}{"accountId": "acc123"},
+		Response: map[string]any{"accountId": "acc123"},
 	})
 	defer server.Close()
 

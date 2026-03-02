@@ -225,7 +225,7 @@ func TestLoggingHook_AfterEvent_Success(t *testing.T) {
 	hook.AfterEvent(ctx, event, result)
 
 	// Parse log output
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log output: %v", err)
 	}
@@ -273,7 +273,7 @@ func TestLoggingHook_AfterEvent_Duplicate(t *testing.T) {
 
 	hook.AfterEvent(ctx, event, result)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log output: %v", err)
 	}
@@ -306,7 +306,7 @@ func TestLoggingHook_AfterEvent_Error(t *testing.T) {
 
 	hook.AfterEvent(ctx, event, result)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log output: %v", err)
 	}
@@ -338,7 +338,7 @@ func TestLoggingHook_AfterEvent_ServerError(t *testing.T) {
 
 	hook.AfterEvent(ctx, event, result)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log output: %v", err)
 	}
@@ -366,7 +366,7 @@ func TestLoggingHook_AfterEvent_NoEventID(t *testing.T) {
 
 	hook.AfterEvent(ctx, event, result)
 
-	var logEntry map[string]interface{}
+	var logEntry map[string]any
 	if err := json.Unmarshal(buf.Bytes(), &logEntry); err != nil {
 		t.Fatalf("Failed to parse log output: %v", err)
 	}

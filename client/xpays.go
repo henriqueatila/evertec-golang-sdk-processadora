@@ -13,7 +13,7 @@ import (
 // Returns array of DeviceToken directly per official API spec.
 func (c *Client) GetDeviceTokensFromCard(ctx context.Context, cardID string) ([]types.DeviceToken, error) {
 	var resp []types.DeviceToken
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/deviceTokens", cardID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/deviceTokens", pathParam(cardID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -23,7 +23,7 @@ func (c *Client) GetDeviceTokensFromCard(ctx context.Context, cardID string) ([]
 // POST /cards/{cardId}/deviceTokens/migrate
 func (c *Client) MigrateDeviceTokens(ctx context.Context, cardID string, req *types.MigrateTokensRequest) (*types.MigrateTokensResponse, error) {
 	var resp types.MigrateTokensResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/migrate", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/migrate", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -34,7 +34,7 @@ func (c *Client) MigrateDeviceTokens(ctx context.Context, cardID string, req *ty
 // Returns array of DeviceToken directly per official API spec.
 func (c *Client) SuspendOrResumeDeviceTokensByCard(ctx context.Context, cardID string, req *types.SuspendResumeRequest) ([]types.DeviceToken, error) {
 	var resp []types.DeviceToken
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/suspendOrResume", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/suspendOrResume", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -45,7 +45,7 @@ func (c *Client) SuspendOrResumeDeviceTokensByCard(ctx context.Context, cardID s
 // Returns array of DeviceToken directly per official API spec.
 func (c *Client) TerminateDeviceTokensByCard(ctx context.Context, cardID string, req *types.TerminateTokensRequest) ([]types.DeviceToken, error) {
 	var resp []types.DeviceToken
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/terminate", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/deviceTokens/terminate", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -55,7 +55,7 @@ func (c *Client) TerminateDeviceTokensByCard(ctx context.Context, cardID string,
 // POST /cards/{cardId}/encryptedCard
 func (c *Client) GetEncryptedCard(ctx context.Context, cardID string, req *types.EncryptedCardRequest) (*types.EncryptedCardResponse, error) {
 	var resp types.EncryptedCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/encryptedCard", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/encryptedCard", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -65,7 +65,7 @@ func (c *Client) GetEncryptedCard(ctx context.Context, cardID string, req *types
 // GET /cards/{cardId}/opaqueCard
 func (c *Client) GetOpaqueCard(ctx context.Context, cardID string) (*types.OpaqueCardResponse, error) {
 	var resp types.OpaqueCardResponse
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/opaqueCard", cardID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/opaqueCard", pathParam(cardID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -76,7 +76,7 @@ func (c *Client) GetOpaqueCard(ctx context.Context, cardID string) (*types.Opaqu
 // Returns DeviceToken directly per official API spec.
 func (c *Client) ActivateDeviceToken(ctx context.Context, deviceTokenID string, req *types.ActivateTokenRequest) (*types.DeviceToken, error) {
 	var resp types.DeviceToken
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/activate", deviceTokenID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/activate", pathParam(deviceTokenID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -87,7 +87,7 @@ func (c *Client) ActivateDeviceToken(ctx context.Context, deviceTokenID string, 
 // Returns DeviceToken directly per official API spec.
 func (c *Client) SuspendOrResumeDeviceToken(ctx context.Context, deviceTokenID string, req *types.SuspendResumeRequest) (*types.DeviceToken, error) {
 	var resp types.DeviceToken
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/suspendOrResume", deviceTokenID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/suspendOrResume", pathParam(deviceTokenID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -98,7 +98,7 @@ func (c *Client) SuspendOrResumeDeviceToken(ctx context.Context, deviceTokenID s
 // Returns DeviceToken directly per official API spec.
 func (c *Client) TerminateDeviceToken(ctx context.Context, deviceTokenID string, req *types.TerminateTokenRequest) (*types.DeviceToken, error) {
 	var resp types.DeviceToken
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/terminate", deviceTokenID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/deviceTokens/%s/terminate", pathParam(deviceTokenID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

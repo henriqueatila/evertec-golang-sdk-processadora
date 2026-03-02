@@ -3,7 +3,7 @@ package types
 
 // HealthCheckResponse from OpenAPI spec.
 type HealthCheckResponse struct {
-	ResultData interface{}                `json:"resultData,omitempty"`
+	ResultData any                `json:"resultData,omitempty"`
 	Systems    []AuthorizerHealthResponse `json:"systems,omitempty"`
 	Datetime   string                     `json:"datetime,omitempty"`
 }

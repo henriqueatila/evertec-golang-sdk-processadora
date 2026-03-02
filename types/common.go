@@ -65,7 +65,7 @@ type ContactInformation struct {
 
 // PersonalIdentityDocumentInfo from OpenAPI spec.
 type PersonalIdentityDocumentInfo struct {
-	IDentityDocumentNumber string `json:"identityDocumentNumber"`
+	IdentityDocumentNumber string `json:"identityDocumentNumber"`
 	State                  string `json:"state"`
 	IssuedBy               string `json:"issuedBy"`
 }
@@ -75,13 +75,13 @@ type OccupationInfo struct {
 	CompanyName    string                 `json:"companyName,omitempty"`
 	JobTitle       string                 `json:"jobTitle,omitempty"`
 	CurrentJobTime int                    `json:"currentJobTime,omitempty"`
-	Income         map[string]interface{} `json:"income,omitempty"`
+	Income         map[string]any `json:"income,omitempty"`
 	IncomeRange    string                 `json:"incomeRange,omitempty"`
 }
 
 // CompanyInfo from OpenAPI spec.
 type CompanyInfo struct {
-	IDentityDocumentNumber string `json:"identityDocumentNumber,omitempty"`
+	IdentityDocumentNumber string `json:"identityDocumentNumber,omitempty"`
 	Name                   string `json:"name,omitempty"`
 	DepartmentCode         string `json:"departmentCode,omitempty"`
 	ContactPerson          string `json:"contactPerson,omitempty"`
@@ -139,11 +139,11 @@ type FeesAndCET struct {
 type DailyFeeEntry struct {
 	Day           string                 `json:"day,omitempty"`
 	Financed      int                    `json:"financed,omitempty"`
-	DailyIOF      map[string]interface{} `json:"daily_iof,omitempty"`
-	DailyInterest map[string]interface{} `json:"daily_interest,omitempty"`
-	ExpectedFees  map[string]interface{} `json:"expected_fees,omitempty"`
-	Lateness      map[string]interface{} `json:"lateness,omitempty"`
-	RefundFees    map[string]interface{} `json:"refund_fees,omitempty"`
+	DailyIOF      map[string]any `json:"daily_iof,omitempty"`
+	DailyInterest map[string]any `json:"daily_interest,omitempty"`
+	ExpectedFees  map[string]any `json:"expected_fees,omitempty"`
+	Lateness      map[string]any `json:"lateness,omitempty"`
+	RefundFees    map[string]any `json:"refund_fees,omitempty"`
 }
 
 // ProductsDTO from OpenAPI spec.
@@ -168,7 +168,7 @@ type BrandErrorDTO struct {
 type DisputeReason string
 
 // MerchantAccountInfo is merchant account information array.
-type MerchantAccountInfo []map[string]interface{}
+type MerchantAccountInfo []map[string]any
 
 // QrCodeTransactionInfo is QR code transaction info array.
-type QrCodeTransactionInfo []map[string]interface{}
+type QrCodeTransactionInfo []map[string]any

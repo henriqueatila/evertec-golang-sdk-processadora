@@ -21,7 +21,7 @@ func TestClient_GetDeviceTokensFromCard_Pro(t *testing.T) {
 	tests := []struct {
 		name         string
 		cardID       string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		validate     func(t *testing.T, resp []types.DeviceToken)
@@ -30,7 +30,7 @@ func TestClient_GetDeviceTokensFromCard_Pro(t *testing.T) {
 			name:   "success: get device tokens",
 			cardID: "card-001",
 			// API returns array directly per official spec
-			mockResponse: []map[string]interface{}{
+			mockResponse: []map[string]any{
 				{
 					"deviceTokenId":    "token-001",
 					"activationStatus": "ACTIVE",
@@ -55,7 +55,7 @@ func TestClient_GetDeviceTokensFromCard_Pro(t *testing.T) {
 		{
 			name:         "success: no tokens",
 			cardID:       "card-no-tokens",
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -103,10 +103,10 @@ func TestClient_MigrateDeviceTokens_Pro(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.MigrateTokensRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: migrate tokens to new card",
@@ -114,14 +114,14 @@ func TestClient_MigrateDeviceTokens_Pro(t *testing.T) {
 			request: &types.MigrateTokensRequest{
 				CardID: "card-002",
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{
+			mockResponse: map[string]any{
+				"resultData": map[string]any{
 					"resultCode": 0,
 				},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "card-002", body["cardId"], "cardId")
 			},
 		},
@@ -147,7 +147,7 @@ func TestClient_MigrateDeviceTokens_Pro(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -175,10 +175,10 @@ func TestClient_SuspendOrResumeDeviceTokensByCard_Pro(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.SuspendResumeRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: suspend all tokens",
@@ -188,10 +188,10 @@ func TestClient_SuspendOrResumeDeviceTokensByCard_Pro(t *testing.T) {
 				ReasonDescription: "Card reported lost",
 			},
 			// API returns array directly per official spec
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, true, body["suspend"], "suspend")
 			},
 		},
@@ -201,7 +201,7 @@ func TestClient_SuspendOrResumeDeviceTokensByCard_Pro(t *testing.T) {
 			request: &types.SuspendResumeRequest{
 				Suspend: false,
 			},
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -212,10 +212,10 @@ func TestClient_SuspendOrResumeDeviceTokensByCard_Pro(t *testing.T) {
 				Suspend:           true,
 				ReasonDescription: "Fraud investigation",
 			},
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "Fraud investigation", body["reasonDescription"], "reasonDescription")
 			},
 		},
@@ -233,7 +233,7 @@ func TestClient_SuspendOrResumeDeviceTokensByCard_Pro(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -261,10 +261,10 @@ func TestClient_TerminateDeviceTokensByCard_Pro(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.TerminateTokensRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: terminate all tokens - card stolen",
@@ -274,10 +274,10 @@ func TestClient_TerminateDeviceTokensByCard_Pro(t *testing.T) {
 				ReasonDescription: "Card reported stolen",
 			},
 			// API returns array directly per official spec
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "REVOKED", body["reason"], "reason")
 			},
 		},
@@ -287,7 +287,7 @@ func TestClient_TerminateDeviceTokensByCard_Pro(t *testing.T) {
 			request: &types.TerminateTokensRequest{
 				Reason: types.TerminateReasonExpired,
 			},
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -297,7 +297,7 @@ func TestClient_TerminateDeviceTokensByCard_Pro(t *testing.T) {
 			request: &types.TerminateTokensRequest{
 				Reason: types.TerminateReasonDeleted,
 			},
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -323,7 +323,7 @@ func TestClient_TerminateDeviceTokensByCard_Pro(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -351,10 +351,10 @@ func TestClient_GetEncryptedCard_Pro(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.EncryptedCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: get encrypted card data",
@@ -365,14 +365,14 @@ func TestClient_GetEncryptedCard_Pro(t *testing.T) {
 				NonceSignature: "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5",
 				Certificates:   []string{"Y2VydDE=", "Y2VydDI="},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"ephemeralPublicKey": "ZXBoZW1lcmFsS2V5",
 				"encryptedPassData":  "ZW5jcnlwdGVkRGF0YQ==",
 				"activationData":     "YWN0aXZhdGlvbkRhdGE=",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertNotNil(t, body["nonce"], "nonce")
 			},
 		},
@@ -382,7 +382,7 @@ func TestClient_GetEncryptedCard_Pro(t *testing.T) {
 			request: &types.EncryptedCardRequest{
 				Nonce: "c2ltcGxlLW5vbmNl",
 			},
-			mockResponse: map[string]interface{}{"encryptedPassData": "data"},
+			mockResponse: map[string]any{"encryptedPassData": "data"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -408,7 +408,7 @@ func TestClient_GetEncryptedCard_Pro(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -435,7 +435,7 @@ func TestClient_GetOpaqueCard_Pro(t *testing.T) {
 	tests := []struct {
 		name         string
 		cardID       string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		validate     func(t *testing.T, resp *types.OpaqueCardResponse)
@@ -443,7 +443,7 @@ func TestClient_GetOpaqueCard_Pro(t *testing.T) {
 		{
 			name:   "success: get opaque card data",
 			cardID: "card-001",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"sender":         "issuer-001",
 				"cardDescriptor": "Y2FyZERlc2NyaXB0b3I=", // base64
 			},
@@ -502,10 +502,10 @@ func TestClient_ActivateDeviceToken(t *testing.T) {
 		name          string
 		deviceTokenID string
 		request       *types.ActivateTokenRequest
-		mockResponse  interface{}
+		mockResponse  any
 		mockStatus    int
 		wantErr       bool
-		validateReq   func(t *testing.T, body map[string]interface{})
+		validateReq   func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:          "success: activate token with App method",
@@ -514,13 +514,13 @@ func TestClient_ActivateDeviceToken(t *testing.T) {
 				IDVMethod: types.IDVMethodApp,
 			},
 			// API returns DeviceToken directly per official spec
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"deviceTokenId":    "token-001",
 				"activationStatus": "ACTIVE",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "App", body["idvMethod"], "idvMethod")
 			},
 		},
@@ -531,10 +531,10 @@ func TestClient_ActivateDeviceToken(t *testing.T) {
 				IDVMethod:         types.IDVMethodOTPSMS,
 				ReasonDescription: "Customer requested via support",
 			},
-			mockResponse: map[string]interface{}{"deviceTokenId": "token-002", "activationStatus": "ACTIVE"},
+			mockResponse: map[string]any{"deviceTokenId": "token-002", "activationStatus": "ACTIVE"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "OTPSMS", body["idvMethod"], "idvMethod")
 			},
 		},
@@ -544,7 +544,7 @@ func TestClient_ActivateDeviceToken(t *testing.T) {
 			request: &types.ActivateTokenRequest{
 				IDVMethod: types.IDVMethodOTPEmail,
 			},
-			mockResponse: map[string]interface{}{"deviceTokenId": "token-003", "activationStatus": "ACTIVE"},
+			mockResponse: map[string]any{"deviceTokenId": "token-003", "activationStatus": "ACTIVE"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -578,7 +578,7 @@ func TestClient_ActivateDeviceToken(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -606,10 +606,10 @@ func TestClient_SuspendOrResumeDeviceToken(t *testing.T) {
 		name          string
 		deviceTokenID string
 		request       *types.SuspendResumeRequest
-		mockResponse  interface{}
+		mockResponse  any
 		mockStatus    int
 		wantErr       bool
-		validateReq   func(t *testing.T, body map[string]interface{})
+		validateReq   func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:          "success: suspend token",
@@ -619,13 +619,13 @@ func TestClient_SuspendOrResumeDeviceToken(t *testing.T) {
 				ReasonDescription: "Lost device",
 			},
 			// API returns DeviceToken directly per official spec
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"deviceTokenId":    "token-001",
 				"suspensionStatus": "SUSPENDED",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, true, body["suspend"], "suspend")
 				AssertEqual(t, "Lost device", body["reasonDescription"], "reasonDescription")
 			},
@@ -636,10 +636,10 @@ func TestClient_SuspendOrResumeDeviceToken(t *testing.T) {
 			request: &types.SuspendResumeRequest{
 				Suspend: false,
 			},
-			mockResponse: map[string]interface{}{"deviceTokenId": "token-002", "suspensionStatus": "NOT_SUSPENDED"},
+			mockResponse: map[string]any{"deviceTokenId": "token-002", "suspensionStatus": "NOT_SUSPENDED"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, false, body["suspend"], "suspend")
 			},
 		},
@@ -665,7 +665,7 @@ func TestClient_SuspendOrResumeDeviceToken(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -693,10 +693,10 @@ func TestClient_TerminateDeviceToken(t *testing.T) {
 		name          string
 		deviceTokenID string
 		request       *types.TerminateTokenRequest
-		mockResponse  interface{}
+		mockResponse  any
 		mockStatus    int
 		wantErr       bool
-		validateReq   func(t *testing.T, body map[string]interface{})
+		validateReq   func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:          "success: terminate token - revoked",
@@ -706,13 +706,13 @@ func TestClient_TerminateDeviceToken(t *testing.T) {
 				ReasonDescription: "Card reported stolen",
 			},
 			// API returns DeviceToken directly per official spec
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"deviceTokenId":    "token-001",
 				"activationStatus": "TERMINATED",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "REVOKED", body["reason"], "reason")
 			},
 		},
@@ -722,7 +722,7 @@ func TestClient_TerminateDeviceToken(t *testing.T) {
 			request: &types.TerminateTokenRequest{
 				Reason: types.TerminateReasonExpired,
 			},
-			mockResponse: map[string]interface{}{"deviceTokenId": "token-002", "activationStatus": "TERMINATED"},
+			mockResponse: map[string]any{"deviceTokenId": "token-002", "activationStatus": "TERMINATED"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -733,7 +733,7 @@ func TestClient_TerminateDeviceToken(t *testing.T) {
 				Reason:            types.TerminateReasonDeleted,
 				ReasonDescription: "Card replacement",
 			},
-			mockResponse: map[string]interface{}{"deviceTokenId": "token-003", "activationStatus": "TERMINATED"},
+			mockResponse: map[string]any{"deviceTokenId": "token-003", "activationStatus": "TERMINATED"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -767,7 +767,7 @@ func TestClient_TerminateDeviceToken(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -802,7 +802,7 @@ func TestClient_XPays_EdgeCases(t *testing.T) {
 			Method:   http.MethodGet,
 			Path:     "",
 			Status:   http.StatusOK,
-			Response: map[string]interface{}{},
+			Response: map[string]any{},
 		})
 		defer server.Close()
 
@@ -820,7 +820,7 @@ func TestClient_XPays_EdgeCases(t *testing.T) {
 			Method:   http.MethodPost,
 			Path:     "",
 			Status:   http.StatusOK,
-			Response: map[string]interface{}{},
+			Response: map[string]any{},
 		})
 		defer server.Close()
 
@@ -847,7 +847,7 @@ func TestClient_XPays_EdgeCases(t *testing.T) {
 				Method:   http.MethodPost,
 				Path:     "",
 				Status:   http.StatusOK,
-				Response: map[string]interface{}{},
+				Response: map[string]any{},
 			})
 
 			client := NewTestClient(t, server)
@@ -874,7 +874,7 @@ func TestClient_XPays_Concurrent(t *testing.T) {
 		Method:   http.MethodPost,
 		Path:     "",
 		Status:   http.StatusOK,
-		Response: map[string]interface{}{"status": "SUCCESS"},
+		Response: map[string]any{"status": "SUCCESS"},
 	})
 	defer server.Close()
 

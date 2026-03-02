@@ -8,11 +8,33 @@ import (
 	"github.com/henriqueatila/evertec-golang-sdk-processadora/types"
 )
 
+func TestPathParam(t *testing.T) {
+	tests := []struct {
+		input string
+		want  string
+	}{
+		{"simple-id", "simple-id"},
+		{"id/with/slashes", "id%2Fwith%2Fslashes"},
+		{"id?query=1", "id%3Fquery=1"},
+		{"id#fragment", "id%23fragment"},
+		{"id with spaces", "id%20with%20spaces"},
+		{"", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			got := pathParam(tt.input)
+			if got != tt.want {
+				t.Errorf("pathParam(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
 // Tests for functions that use query building
 
 func TestClient_ListDisputes_WithParams(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/disputes", http.StatusOK, map[string]interface{}{
-		"disputes": []map[string]interface{}{},
+	server := mockServer(t, http.MethodGet, "/disputes", http.StatusOK, map[string]any{
+		"disputes": []map[string]any{},
 	})
 	defer server.Close()
 
@@ -35,8 +57,8 @@ func TestClient_ListDisputes_WithParams(t *testing.T) {
 }
 
 func TestClient_ListAccountTransactions_WithParams(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/accounts/acc123/transactions", http.StatusOK, map[string]interface{}{
-		"transactions": []map[string]interface{}{},
+	server := mockServer(t, http.MethodGet, "/accounts/acc123/transactions", http.StatusOK, map[string]any{
+		"transactions": []map[string]any{},
 	})
 	defer server.Close()
 
@@ -59,8 +81,8 @@ func TestClient_ListAccountTransactions_WithParams(t *testing.T) {
 }
 
 func TestClient_ListCobranded_WithParams(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/cobranded", http.StatusOK, map[string]interface{}{
-		"data": []map[string]interface{}{},
+	server := mockServer(t, http.MethodGet, "/cobranded", http.StatusOK, map[string]any{
+		"data": []map[string]any{},
 	})
 	defer server.Close()
 
@@ -80,8 +102,8 @@ func TestClient_ListCobranded_WithParams(t *testing.T) {
 }
 
 func TestClient_ListInclusiveTransactions_WithParams(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/inclusives", http.StatusOK, map[string]interface{}{
-		"transactions": []map[string]interface{}{},
+	server := mockServer(t, http.MethodGet, "/inclusives", http.StatusOK, map[string]any{
+		"transactions": []map[string]any{},
 	})
 	defer server.Close()
 
@@ -104,8 +126,8 @@ func TestClient_ListInclusiveTransactions_WithParams(t *testing.T) {
 
 // Test SimulateAdvancePayment/RequestAdvancePayment with request body
 func TestClient_SimulateAdvancePayment_WithBody(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceSimulation/txn123", http.StatusOK, map[string]interface{}{
-		"simulation": map[string]interface{}{},
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceSimulation/txn123", http.StatusOK, map[string]any{
+		"simulation": map[string]any{},
 	})
 	defer server.Close()
 
@@ -125,7 +147,7 @@ func TestClient_SimulateAdvancePayment_WithBody(t *testing.T) {
 }
 
 func TestClient_RequestAdvancePayment_WithBody(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceRequest/txn123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceRequest/txn123", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()

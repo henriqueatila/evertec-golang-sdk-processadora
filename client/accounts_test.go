@@ -30,7 +30,7 @@ func TestClient_UpdateAccount(t *testing.T) {
 			accountID: "acc-test-001",
 			request: &types.UpdateAccountRequest{
 				IssuerRequestID: "req123",
-				AccountOwner: map[string]interface{}{
+				AccountOwner: map[string]any{
 					"fullName": "Updated Name",
 					"email":    "updated@email.com",
 				},
@@ -40,10 +40,10 @@ func TestClient_UpdateAccount(t *testing.T) {
 			validateReq: func(t *testing.T, r *http.Request, body []byte) {
 				AssertEqual(t, http.MethodPut, r.Method, "method")
 
-				var reqBody map[string]interface{}
+				var reqBody map[string]any
 				_ = json.Unmarshal(body, &reqBody)
 
-				owner, ok := reqBody["accountOwner"].(map[string]interface{})
+				owner, ok := reqBody["accountOwner"].(map[string]any)
 				if !ok {
 					t.Fatal("accountOwner not found in request body")
 				}
@@ -54,7 +54,7 @@ func TestClient_UpdateAccount(t *testing.T) {
 			name:      "success: update billing address",
 			accountID: "acc-test-002",
 			request: &types.UpdateAccountRequest{
-				BillingAddress: map[string]interface{}{
+				BillingAddress: map[string]any{
 					"addressLine1": "Rua Nova 456",
 					"city":         "Rio de Janeiro",
 					"state":        "RJ",
@@ -66,10 +66,10 @@ func TestClient_UpdateAccount(t *testing.T) {
 			mockStatus: http.StatusOK,
 			wantErr:    false,
 			validateReq: func(t *testing.T, r *http.Request, body []byte) {
-				var reqBody map[string]interface{}
+				var reqBody map[string]any
 				_ = json.Unmarshal(body, &reqBody)
 
-				address, ok := reqBody["billingAddress"].(map[string]interface{})
+				address, ok := reqBody["billingAddress"].(map[string]any)
 				if !ok {
 					t.Fatal("billingAddress not found in request body")
 				}
@@ -94,7 +94,7 @@ func TestClient_UpdateAccount(t *testing.T) {
 
 			mockServer := NewMockServer(t, &MockServerConfig{
 				Status:   tt.mockStatus,
-				Response: map[string]interface{}{"resultData": map[string]interface{}{"resultCode": 0}},
+				Response: map[string]any{"resultData": map[string]any{"resultCode": 0}},
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if !strings.Contains(r.URL.Path, tt.accountID) {
 						t.Errorf("expected path to contain %s, got %s", tt.accountID, r.URL.Path)
@@ -169,7 +169,7 @@ func TestClient_CreateCredit(t *testing.T) {
 
 			mockServer := NewMockServer(t, &MockServerConfig{
 				Status:   tt.mockStatus,
-				Response: map[string]interface{}{"resultData": map[string]interface{}{"resultCode": 0}, "transactionId": "tx123"},
+				Response: map[string]any{"resultData": map[string]any{"resultCode": 0}, "transactionId": "tx123"},
 			})
 			defer mockServer.Close()
 
@@ -191,7 +191,7 @@ func TestClient_ListAccounts(t *testing.T) {
 	tests := []struct {
 		name         string
 		params       *types.ListAccountsParams
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		validateReq  func(t *testing.T, r *http.Request)
@@ -199,9 +199,9 @@ func TestClient_ListAccounts(t *testing.T) {
 		{
 			name:   "success: list accounts without params",
 			params: nil,
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": true,
-				"accounts": []map[string]interface{}{
+				"accounts": []map[string]any{
 					{"accountId": "acc001", "psProductCode": "CREDIT"},
 					{"accountId": "acc002", "psProductCode": "DEBIT"},
 				},
@@ -214,9 +214,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				Limit: 10,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -232,9 +232,9 @@ func TestClient_ListAccounts(t *testing.T) {
 				StartingAfter: "acc100",
 				EndingBefore:  "acc200",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  true,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -252,9 +252,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				IdentityDocumentNumber: "12345678901",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore": false,
-				"accounts": []map[string]interface{}{
+				"accounts": []map[string]any{
 					{"accountId": "acc001"},
 				},
 			},
@@ -271,9 +271,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				FullName: "JohnDoe",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -288,9 +288,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				PSProductCode: 100,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -305,9 +305,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				AccountStatus: "ACTIVE",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -322,9 +322,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				IssuerAccountID: "issuer-001",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -339,9 +339,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				IncludedSince: "2024-01-01",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -356,9 +356,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				Sort: "created_at_desc",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -373,9 +373,9 @@ func TestClient_ListAccounts(t *testing.T) {
 			params: &types.ListAccountsParams{
 				First: true,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -400,9 +400,9 @@ func TestClient_ListAccounts(t *testing.T) {
 				Sort:                   "created_at_asc",
 				First:                  true,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"hasMore":  false,
-				"accounts": []map[string]interface{}{},
+				"accounts": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -485,7 +485,7 @@ func TestClient_CancelAccount(t *testing.T) {
 
 			mockServer := NewMockServer(t, &MockServerConfig{
 				Status:   tt.mockStatus,
-				Response: map[string]interface{}{"resultData": map[string]interface{}{"resultCode": 0}},
+				Response: map[string]any{"resultData": map[string]any{"resultCode": 0}},
 			})
 			defer mockServer.Close()
 
@@ -523,7 +523,7 @@ func TestClient_BlockAccount(t *testing.T) {
 			wantErr:    false,
 			validateReq: func(t *testing.T, r *http.Request, body []byte) {
 				AssertEqual(t, http.MethodPost, r.Method, "method")
-				var reqBody map[string]interface{}
+				var reqBody map[string]any
 				_ = json.Unmarshal(body, &reqBody)
 				AssertEqual(t, "Fraud suspected", reqBody["reason"], "reason")
 			},
@@ -548,7 +548,7 @@ func TestClient_BlockAccount(t *testing.T) {
 				Method:   http.MethodPost,
 				Path:     "/accounts/" + tt.accountID + "/blockAccount",
 				Status:   tt.mockStatus,
-				Response: map[string]interface{}{"resultData": map[string]interface{}{"resultCode": 0}},
+				Response: map[string]any{"resultData": map[string]any{"resultCode": 0}},
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
 						tt.validateReq(t, r, body)
@@ -615,7 +615,7 @@ func TestClient_UnblockAccount(t *testing.T) {
 				Method:   http.MethodPost,
 				Path:     "/accounts/" + tt.accountID + "/unblockAccount",
 				Status:   tt.mockStatus,
-				Response: map[string]interface{}{"resultData": map[string]interface{}{"resultCode": 0}},
+				Response: map[string]any{"resultData": map[string]any{"resultCode": 0}},
 			})
 			defer mockServer.Close()
 
@@ -637,16 +637,16 @@ func TestClient_GetAccountBalance(t *testing.T) {
 	tests := []struct {
 		name         string
 		accountID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:      "success: get account balance",
 			accountID: "acc-test-001",
-			mockResponse: map[string]interface{}{
-				"available": map[string]interface{}{"amount": 500000, "currencyCode": 986},
-				"current":   map[string]interface{}{"amount": 450000, "currencyCode": 986},
+			mockResponse: map[string]any{
+				"available": map[string]any{"amount": 500000, "currencyCode": 986},
+				"current":   map[string]any{"amount": 450000, "currencyCode": 986},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -654,9 +654,9 @@ func TestClient_GetAccountBalance(t *testing.T) {
 		{
 			name:      "success: zero balance",
 			accountID: "acc-test-002",
-			mockResponse: map[string]interface{}{
-				"available": map[string]interface{}{"amount": 0, "currencyCode": 986},
-				"current":   map[string]interface{}{"amount": 0, "currencyCode": 986},
+			mockResponse: map[string]any{
+				"available": map[string]any{"amount": 0, "currencyCode": 986},
+				"current":   map[string]any{"amount": 0, "currencyCode": 986},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -702,7 +702,7 @@ func TestClient_ListAccountCards(t *testing.T) {
 	tests := []struct {
 		name         string
 		accountID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		wantLen      int
@@ -710,7 +710,7 @@ func TestClient_ListAccountCards(t *testing.T) {
 		{
 			name:      "success: list account cards",
 			accountID: "acc-test-001",
-			mockResponse: []map[string]interface{}{
+			mockResponse: []map[string]any{
 				{"cardId": "card001", "status": "ACTIVE", "last4Digits": "1234"},
 				{"cardId": "card002", "status": "BLOCKED", "last4Digits": "5678"},
 			},
@@ -721,7 +721,7 @@ func TestClient_ListAccountCards(t *testing.T) {
 		{
 			name:         "success: no cards",
 			accountID:    "acc-test-002",
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 			wantLen:      0,
@@ -767,14 +767,14 @@ func TestClient_GetCreditVerificationStatus(t *testing.T) {
 	tests := []struct {
 		name         string
 		accountID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:      "success: get credit verification status approved",
 			accountID: "acc-test-001",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status":   "APPROVED",
 				"decision": "AUTO_APPROVED",
 				"score":    850,
@@ -785,7 +785,7 @@ func TestClient_GetCreditVerificationStatus(t *testing.T) {
 		{
 			name:      "success: get credit verification status pending",
 			accountID: "acc-test-002",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status": "PENDING",
 			},
 			mockStatus: http.StatusOK,
@@ -832,7 +832,7 @@ func TestClient_ListScheduledTransactions(t *testing.T) {
 	tests := []struct {
 		name         string
 		accountID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		wantLen      int
@@ -840,9 +840,9 @@ func TestClient_ListScheduledTransactions(t *testing.T) {
 		{
 			name:      "success: list scheduled transactions",
 			accountID: "acc-test-001",
-			mockResponse: []map[string]interface{}{
-				{"transactionId": "tx001", "amount": map[string]interface{}{"amount": 10000}, "scheduledDate": "2024-02-01"},
-				{"transactionId": "tx002", "amount": map[string]interface{}{"amount": 20000}, "scheduledDate": "2024-02-15"},
+			mockResponse: []map[string]any{
+				{"transactionId": "tx001", "amount": map[string]any{"amount": 10000}, "scheduledDate": "2024-02-01"},
+				{"transactionId": "tx002", "amount": map[string]any{"amount": 20000}, "scheduledDate": "2024-02-15"},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -851,7 +851,7 @@ func TestClient_ListScheduledTransactions(t *testing.T) {
 		{
 			name:         "success: no scheduled transactions",
 			accountID:    "acc-test-002",
-			mockResponse: []map[string]interface{}{},
+			mockResponse: []map[string]any{},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 			wantLen:      0,
@@ -897,17 +897,17 @@ func TestClient_ListCredits(t *testing.T) {
 	tests := []struct {
 		name         string
 		accountID    string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:      "success: list credits",
 			accountID: "acc-test-001",
-			mockResponse: map[string]interface{}{
-				"credits": []map[string]interface{}{
-					{"creditId": "cr001", "amount": map[string]interface{}{"amount": 10000}, "type": "payment"},
-					{"creditId": "cr002", "amount": map[string]interface{}{"amount": 5000}, "type": "refund"},
+			mockResponse: map[string]any{
+				"credits": []map[string]any{
+					{"creditId": "cr001", "amount": map[string]any{"amount": 10000}, "type": "payment"},
+					{"creditId": "cr002", "amount": map[string]any{"amount": 5000}, "type": "refund"},
 				},
 				"hasMore": false,
 			},
@@ -917,8 +917,8 @@ func TestClient_ListCredits(t *testing.T) {
 		{
 			name:      "success: empty credits list",
 			accountID: "acc-test-002",
-			mockResponse: map[string]interface{}{
-				"credits": []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"credits": []map[string]any{},
 				"hasMore": false,
 			},
 			mockStatus: http.StatusOK,
@@ -968,7 +968,7 @@ func TestClient_CreateDebit(t *testing.T) {
 		request     *types.CreateDebitRequest
 		mockStatus  int
 		wantErr     bool
-		validateReq func(t *testing.T, body map[string]interface{})
+		validateReq func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:      "success: create debit transaction",
@@ -981,7 +981,7 @@ func TestClient_CreateDebit(t *testing.T) {
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "fee", body["type"], "type")
 				AssertEqual(t, "Monthly fee", body["description"], "description")
 			},
@@ -1024,13 +1024,13 @@ func TestClient_CreateDebit(t *testing.T) {
 				Method: http.MethodPost,
 				Path:   "/accounts/" + tt.accountID + "/transactions/debits",
 				Status: tt.mockStatus,
-				Response: map[string]interface{}{
+				Response: map[string]any{
 					"transactionId": "tx123",
 					"status":        "COMPLETED",
 				},
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}

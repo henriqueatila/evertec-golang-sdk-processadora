@@ -12,15 +12,15 @@ func TestClient_ListReports(t *testing.T) {
 	tests := []struct {
 		name         string
 		fileType     ReportFileType
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:     "success: list CSV reports",
 			fileType: ReportFileTypeCSV,
-			mockResponse: map[string]interface{}{
-				"files": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"files": []map[string]any{
 					{"key": "report_2024_01.csv", "size": 1024, "lastModified": "2024-01-15T10:00:00Z"},
 					{"key": "report_2024_02.csv", "size": 2048, "lastModified": "2024-02-15T10:00:00Z"},
 				},
@@ -31,8 +31,8 @@ func TestClient_ListReports(t *testing.T) {
 		{
 			name:     "success: list PDF reports",
 			fileType: ReportFileTypePDF,
-			mockResponse: map[string]interface{}{
-				"files": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"files": []map[string]any{
 					{"key": "statement_2024_01.pdf", "size": 5120},
 				},
 			},
@@ -42,8 +42,8 @@ func TestClient_ListReports(t *testing.T) {
 		{
 			name:     "success: list TXT reports",
 			fileType: ReportFileTypeTXT,
-			mockResponse: map[string]interface{}{
-				"files": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"files": []map[string]any{
 					{"key": "log_2024_01.txt", "size": 512},
 				},
 			},
@@ -53,8 +53,8 @@ func TestClient_ListReports(t *testing.T) {
 		{
 			name:     "success: empty reports list",
 			fileType: ReportFileTypeCSV,
-			mockResponse: map[string]interface{}{
-				"files": []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"files": []map[string]any{},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
@@ -94,7 +94,7 @@ func TestClient_GetReportTemporaryURL(t *testing.T) {
 		name         string
 		fileType     ReportFileType
 		fileKey      string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -102,7 +102,7 @@ func TestClient_GetReportTemporaryURL(t *testing.T) {
 			name:     "success: get CSV report URL",
 			fileType: ReportFileTypeCSV,
 			fileKey:  "report_2024_01.csv",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"temporaryUrl": "https://storage.example.com/reports/report_2024_01.csv?token=abc123&expires=1234567890",
 				"expiresAt":    "2024-01-15T11:00:00Z",
 			},
@@ -113,7 +113,7 @@ func TestClient_GetReportTemporaryURL(t *testing.T) {
 			name:     "success: get PDF report URL",
 			fileType: ReportFileTypePDF,
 			fileKey:  "statement_2024_01.pdf",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"temporaryUrl": "https://storage.example.com/reports/statement_2024_01.pdf?token=xyz789",
 				"expiresAt":    "2024-01-15T11:00:00Z",
 			},

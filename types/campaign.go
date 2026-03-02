@@ -17,21 +17,21 @@ type CampaignObject struct {
 
 // CampaignResponseObject from OpenAPI spec.
 type CampaignResponseObject struct {
-	ResultData interface{} `json:"resultData,omitempty"`
-	Campaign   interface{} `json:"campaign,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
+	Campaign   any `json:"campaign,omitempty"`
 }
 
 // CampaignListResponseObject from OpenAPI spec.
 type CampaignListResponseObject struct {
-	ResultData interface{}              `json:"resultData,omitempty"`
-	Campaigns  []map[string]interface{} `json:"campaigns,omitempty"`
+	ResultData any              `json:"resultData,omitempty"`
+	Campaigns  []map[string]any `json:"campaigns,omitempty"`
 	PageNum    string                   `json:"page_num,omitempty"`
 	TotalPages string                   `json:"total_pages,omitempty"`
 }
 
 // CampaignAccountsListResponseObject from OpenAPI spec.
 type CampaignAccountsListResponseObject struct {
-	ResultData interface{}     `json:"resultData,omitempty"`
+	ResultData any     `json:"resultData,omitempty"`
 	Accounts   []AccountObject `json:"accounts,omitempty"`
 	PageNum    int             `json:"page_num,omitempty"`
 	TotalPages int             `json:"total_pages,omitempty"`
@@ -50,6 +50,6 @@ type AgentObject struct {
 
 // AgentResponseObject from OpenAPI spec.
 type AgentResponseObject struct {
-	ResultData interface{} `json:"resultData,omitempty"`
-	Agent      interface{} `json:"agent,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
+	Agent      any `json:"agent,omitempty"`
 }

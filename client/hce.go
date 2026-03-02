@@ -20,7 +20,7 @@ func (c *Client) ProvisionHCE(ctx context.Context, req *types.HCEProvisionReques
 // CreateHCECard creates an HCE card for an account.
 func (c *Client) CreateHCECard(ctx context.Context, accountID string, req *types.CreateHCECardRequest) (*types.CreateHCECardSuccessfully, error) {
 	var resp types.CreateHCECardSuccessfully
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/hce/%s/createHCECard", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/hce/%s/createHCECard", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -29,7 +29,7 @@ func (c *Client) CreateHCECard(ctx context.Context, accountID string, req *types
 // UnprovisionHCE unprovisions an HCE card.
 func (c *Client) UnprovisionHCE(ctx context.Context, issuerDeviceID string, req *types.UnprovisionRequest) (*types.UnprovisionSuccessfully, error) {
 	var resp types.UnprovisionSuccessfully
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/hce/unprovision/%s", issuerDeviceID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/hce/unprovision/%s", pathParam(issuerDeviceID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

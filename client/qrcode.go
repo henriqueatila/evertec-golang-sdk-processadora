@@ -29,7 +29,7 @@ func (c *Client) SimplePayment(ctx context.Context, req *types.SimplePaymentCard
 // TransactionCallback sends a callback for a transaction.
 func (c *Client) TransactionCallback(ctx context.Context, transactionID string, req *types.TransactionCallbackRequest) (*types.TransactionCallbackResponse, error) {
 	var resp types.TransactionCallbackResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/callbacks/transactions/%s", transactionID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/callbacks/transactions/%s", pathParam(transactionID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

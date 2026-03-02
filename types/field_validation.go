@@ -152,7 +152,7 @@ func (c CardholderData) Validate() error {
 	if err := ValidateMaxLength("FullName", c.FullName, MaxFullName); err != nil {
 		return err
 	}
-	if err := ValidateMaxLength("IdentityDocumentNumber", c.IDentityDocumentNumber, MaxIdentityDocumentNumber); err != nil {
+	if err := ValidateMaxLength("IdentityDocumentNumber", c.IdentityDocumentNumber, MaxIdentityDocumentNumber); err != nil {
 		return err
 	}
 	if err := ValidateMaxLength("Nationality", c.Nationality, MaxNationality); err != nil {
@@ -178,7 +178,7 @@ func (c CardholderData) Validate() error {
 
 // Validate validates the PersonalIdentityDocumentInfo fields including length constraints.
 func (p PersonalIdentityDocumentInfo) Validate() error {
-	if err := ValidateMaxLength("IdentityDocumentNumber", p.IDentityDocumentNumber, MaxOtherIdentityDocNumber); err != nil {
+	if err := ValidateMaxLength("IdentityDocumentNumber", p.IdentityDocumentNumber, MaxOtherIdentityDocNumber); err != nil {
 		return err
 	}
 	if err := ValidateMaxLength("State", p.State, MaxState); err != nil {
@@ -195,7 +195,7 @@ func (a AccountOwnerData) Validate() error {
 	if err := ValidateMaxLength("FullName", a.FullName, MaxFullName); err != nil {
 		return err
 	}
-	if err := ValidateMaxLength("IdentityDocumentNumber", a.IDentityDocumentNumber, MaxIdentityDocumentNumber); err != nil {
+	if err := ValidateMaxLength("IdentityDocumentNumber", a.IdentityDocumentNumber, MaxIdentityDocumentNumber); err != nil {
 		return err
 	}
 	if a.MotherName != "" {
@@ -206,8 +206,8 @@ func (a AccountOwnerData) Validate() error {
 	if err := a.ContactInformation.Validate(); err != nil {
 		return err
 	}
-	if a.OtherIDentityDocumentNumber != nil {
-		if err := a.OtherIDentityDocumentNumber.Validate(); err != nil {
+	if a.OtherIdentityDocumentNumber != nil {
+		if err := a.OtherIdentityDocumentNumber.Validate(); err != nil {
 			return err
 		}
 	}
@@ -250,7 +250,7 @@ func (n NewCardRequest) Validate() error {
 		}
 	}
 	if n.Cardholder != nil {
-		// Handle interface{} to CardholderData conversion
+		// Handle any to CardholderData conversion
 		if holderData, ok := n.Cardholder.(CardholderData); ok {
 			if err := holderData.Validate(); err != nil {
 				return err

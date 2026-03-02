@@ -14,7 +14,7 @@ import (
 // Docs: https://paysmart-api.gitlab.io/processadora/PT-br/docs/criacao-de-cartoes-fisicos
 func (c *Client) RequestPhysicalCard(ctx context.Context, accountID string, req *types.PhysicalCardRequest) (*types.PhysicalCardResponse, error) {
 	var resp types.PhysicalCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/newCardRequest", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/newCardRequest", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -25,7 +25,7 @@ func (c *Client) RequestPhysicalCard(ctx context.Context, accountID string, req 
 // Docs: https://paysmart-api.gitlab.io/processadora/PT-br/docs/criacao-de-cartoes-virtuais
 func (c *Client) RequestVirtualCard(ctx context.Context, accountID string, req *types.CreateAccountVirtualCardRequest) (*types.CreateVirtualCardResponse, error) {
 	var resp types.CreateVirtualCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/virtualcards", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/virtualcards", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -35,7 +35,7 @@ func (c *Client) RequestVirtualCard(ctx context.Context, accountID string, req *
 // Deprecated: This method is kept for backward compatibility.
 func (c *Client) RequestNewCard(ctx context.Context, accountID string, req *types.NewCardRequest) (*types.NewCardResponse, error) {
 	var resp types.NewCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/newCardRequest", accountID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/accounts/%s/newCardRequest", pathParam(accountID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -44,7 +44,7 @@ func (c *Client) RequestNewCard(ctx context.Context, accountID string, req *type
 // GetCard retrieves a card by ID.
 func (c *Client) GetCard(ctx context.Context, cardID string) (*types.CardDetails, error) {
 	var resp types.CardDetails
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s", cardID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s", pathParam(cardID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -52,23 +52,23 @@ func (c *Client) GetCard(ctx context.Context, cardID string) (*types.CardDetails
 
 // BlockCard blocks a card.
 func (c *Client) BlockCard(ctx context.Context, cardID string, req *types.BlockCardRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/blockCardRequest", cardID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/blockCardRequest", pathParam(cardID)), req, nil)
 }
 
 // UnblockCard unblocks a card.
 func (c *Client) UnblockCard(ctx context.Context, cardID string, req *types.UnblockCardRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/unblockCardRequest", cardID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/unblockCardRequest", pathParam(cardID)), req, nil)
 }
 
 // ChangePin changes the card PIN.
 func (c *Client) ChangePin(ctx context.Context, cardID string, req *types.ChangePinRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/changePin", cardID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/changePin", pathParam(cardID)), req, nil)
 }
 
 // VerifyPin verifies the card PIN.
 func (c *Client) VerifyPin(ctx context.Context, cardID string, req *types.VerifyPinRequest) (*types.VerifyPinResponse, error) {
 	var resp types.VerifyPinResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/validatePin", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/validatePin", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -118,7 +118,7 @@ func buildCardsQuery(params *types.ListCardsParams) string {
 // UpdateCard updates a card.
 func (c *Client) UpdateCard(ctx context.Context, cardID string, req *types.UpdateCardRequest) (*types.CardDetails, error) {
 	var resp types.CardDetails
-	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/cards/%s", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPut, fmt.Sprintf("/cards/%s", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -154,7 +154,7 @@ func (c *Client) FindCardByPAN(ctx context.Context, req *types.FindCardByPANRequ
 // BlockAndReissueCard blocks a card and issues a replacement.
 func (c *Client) BlockAndReissueCard(ctx context.Context, cardID string, req *types.BlockAndReissueCardRequest) (*types.NewCardResponse, error) {
 	var resp types.NewCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/blockAndReissueCardRequest", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/blockAndReissueCardRequest", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -163,7 +163,7 @@ func (c *Client) BlockAndReissueCard(ctx context.Context, cardID string, req *ty
 // ReissueCard reissues a card without blocking the current one.
 func (c *Client) ReissueCard(ctx context.Context, cardID string, req *types.ReissueCardRequest) (*types.NewCardResponse, error) {
 	var resp types.NewCardResponse
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/reissueCardRequest", cardID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/reissueCardRequest", pathParam(cardID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -171,13 +171,13 @@ func (c *Client) ReissueCard(ctx context.Context, cardID string, req *types.Reis
 
 // SetCardFunctions sets the enabled functions for a card.
 func (c *Client) SetCardFunctions(ctx context.Context, cardID string, req *types.CardFunctions) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/cardFunctions", cardID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/cards/%s/cardFunctions", pathParam(cardID)), req, nil)
 }
 
 // GetCardFunctions retrieves the enabled functions for a card.
 func (c *Client) GetCardFunctions(ctx context.Context, cardID string) (*types.CardFunctions, error) {
 	var resp types.CardFunctions
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/cardFunctions", cardID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/cardFunctions", pathParam(cardID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -185,13 +185,13 @@ func (c *Client) GetCardFunctions(ctx context.Context, cardID string) (*types.Ca
 
 // ResetCardFunctions resets card functions to default settings.
 func (c *Client) ResetCardFunctions(ctx context.Context, cardID string) error {
-	return c.request(ctx, http.MethodPatch, fmt.Sprintf("/cards/%s/resetCardFunctions", cardID), nil, nil)
+	return c.request(ctx, http.MethodPatch, fmt.Sprintf("/cards/%s/resetCardFunctions", pathParam(cardID)), nil, nil)
 }
 
 // GetCardDataprepStatus retrieves the dataprep status of a card.
 func (c *Client) GetCardDataprepStatus(ctx context.Context, cardID string) (*types.CardDataprepStatus, error) {
 	var resp types.CardDataprepStatus
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/dataprepstatus", cardID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/cards/%s/dataprepstatus", pathParam(cardID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

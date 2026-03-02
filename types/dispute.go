@@ -6,7 +6,7 @@ type Dispute struct {
 	DisputeID              string         `json:"disputeId,omitempty"`
 	DisputeRequest         DisputeRequest `json:"disputeRequest"`
 	DisputeDate            string         `json:"disputeDate"`
-	DisputeMaxDateResponse interface{}    `json:"disputeMaxDateResponse,omitempty"`
+	DisputeMaxDateResponse any    `json:"disputeMaxDateResponse,omitempty"`
 	DisputeType            DisputeType    `json:"disputeType"`
 	DisputeStatus          DisputeStatus  `json:"disputeStatus"`
 	CurrentStage           string         `json:"currentStage"`
@@ -30,14 +30,14 @@ type DisputeRequest struct {
 	DisputeTextMessage string       `json:"disputeTextMessage"`
 	FraudType          string       `json:"fraudType,omitempty"`
 	Partial            bool         `json:"partial,omitempty"`
-	AmountDisputed     interface{}  `json:"amount_disputed,omitempty"`
+	AmountDisputed     any  `json:"amount_disputed,omitempty"`
 	WillAddDocuments   bool         `json:"willAddDocuments,omitempty"`
 	SourceAudit        *SourceAudit `json:"sourceAudit,omitempty"`
 }
 
 // DisputeCreatedSuccessfully from OpenAPI spec.
 type DisputeCreatedSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 	Dispute    *Dispute    `json:"dispute,omitempty"`
 }
 
@@ -51,7 +51,7 @@ type DisputeInfo struct {
 // DisputeEvent from OpenAPI spec.
 type DisputeEvent struct {
 	SentFrom    string      `json:"sent_from,omitempty"`
-	DateSent    interface{} `json:"date_sent,omitempty"`
+	DateSent    any `json:"date_sent,omitempty"`
 	Description string      `json:"description,omitempty"`
 }
 
@@ -71,7 +71,7 @@ type DisputeDocumentRequest struct {
 
 // DisputeDocumentCreatedSuccessfully from OpenAPI spec.
 type DisputeDocumentCreatedSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 	Dispute    *Dispute    `json:"dispute,omitempty"`
 }
 
@@ -86,7 +86,7 @@ type DisputeResponseRequest struct {
 
 // DisputeResponseCreatedSuccessfully from OpenAPI spec.
 type DisputeResponseCreatedSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 	Dispute    *Dispute    `json:"dispute,omitempty"`
 }
 
@@ -99,7 +99,7 @@ type DisputeReversalRequest struct {
 
 // DisputeReversalCreatedSuccessfully from OpenAPI spec.
 type DisputeReversalCreatedSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 	Dispute    *Dispute    `json:"dispute,omitempty"`
 }
 
@@ -112,5 +112,5 @@ type UpdateDisputeStatusRequest struct {
 
 // DisputeStatusUpdatedSuccessfully from OpenAPI spec.
 type DisputeStatusUpdatedSuccessfully struct {
-	ResultData interface{} `json:"resultData,omitempty"`
+	ResultData any `json:"resultData,omitempty"`
 }

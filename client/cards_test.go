@@ -20,7 +20,7 @@ func TestClient_RequestNewCard(t *testing.T) {
 		name         string
 		accountID    string
 		request      *types.NewCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		validate     func(t *testing.T, resp *types.NewCardResponse)
@@ -32,7 +32,7 @@ func TestClient_RequestNewCard(t *testing.T) {
 				IssuerRequestID: "req123",
 				PsProductCode:   "VIRTUAL",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":      "card123",
 				"cardStatus":  "ACTIVE",
 				"last4Digits": "1234",
@@ -51,7 +51,7 @@ func TestClient_RequestNewCard(t *testing.T) {
 				PsProductCode:       "PHYSICAL",
 				InhibitPhysicalCard: false,
 			},
-			mockResponse: map[string]interface{}{"cardId": "card456"},
+			mockResponse: map[string]any{"cardId": "card456"},
 			mockStatus:   http.StatusCreated,
 			wantErr:      false,
 		},
@@ -100,10 +100,10 @@ func TestClient_VerifyPin(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.VerifyPinRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: verify pin",
@@ -114,13 +114,13 @@ func TestClient_VerifyPin(t *testing.T) {
 					PinBlock:       "encrypted-pin-block",
 				},
 			},
-			mockResponse: map[string]interface{}{
-				"resultData": map[string]interface{}{"resultCode": 0},
+			mockResponse: map[string]any{
+				"resultData": map[string]any{"resultCode": 0},
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
-				pin, ok := body["pin"].(map[string]interface{})
+			validateReq: func(t *testing.T, body map[string]any) {
+				pin, ok := body["pin"].(map[string]any)
 				if ok {
 					AssertEqual(t, "encrypted-pin-block", pin["pinBlock"], "pinBlock")
 					AssertEqual(t, "key-001", pin["idTransportKey"], "idTransportKey")
@@ -154,7 +154,7 @@ func TestClient_VerifyPin(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -182,10 +182,10 @@ func TestClient_UpdateCard(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.UpdateCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: update card",
@@ -194,13 +194,13 @@ func TestClient_UpdateCard(t *testing.T) {
 				IssuerRequestID:  "req123",
 				AllowContactless: true,
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":           "card123",
 				"allowContactless": true,
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, true, body["allowContactless"], "allowContactless")
 			},
 		},
@@ -228,7 +228,7 @@ func TestClient_UpdateCard(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -255,7 +255,7 @@ func TestClient_CreateAnonymousCard(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.AnonymousCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -264,9 +264,9 @@ func TestClient_CreateAnonymousCard(t *testing.T) {
 			request: &types.AnonymousCardRequest{
 				IssuerRequestID:     "req123",
 				PsProductCode:       "VIRTUAL",
-				CardDeliveryAddress: map[string]interface{}{"country": "BR"},
+				CardDeliveryAddress: map[string]any{"country": "BR"},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":    "anon123",
 				"accountId": "acc123",
 			},
@@ -316,10 +316,10 @@ func TestClient_BindAnonymousCard(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.BindAnonymousCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: bind anonymous card",
@@ -327,15 +327,15 @@ func TestClient_BindAnonymousCard(t *testing.T) {
 				PAN:        "4111111111111111",
 				CVV:        "123",
 				DateExp:    "12/28",
-				Cardholder: map[string]interface{}{"name": "Test User"},
+				Cardholder: map[string]any{"name": "Test User"},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":    "anon123",
 				"accountId": "acc456",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "4111111111111111", body["PAN"], "PAN")
 			},
 		},
@@ -345,7 +345,7 @@ func TestClient_BindAnonymousCard(t *testing.T) {
 				PAN:        "0000000000000000",
 				CVV:        "000",
 				DateExp:    "01/25",
-				Cardholder: map[string]interface{}{},
+				Cardholder: map[string]any{},
 			},
 			mockResponse: nil,
 			mockStatus:   http.StatusNotFound,
@@ -365,7 +365,7 @@ func TestClient_BindAnonymousCard(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -392,23 +392,23 @@ func TestClient_FindCardByPAN(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.FindCardByPANRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: find card by PAN",
 			request: &types.FindCardByPANRequest{
 				PAN: "4111111111111111",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId": "card123",
 				"status": "ACTIVE",
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "4111111111111111", body["PAN"], "PAN")
 			},
 		},
@@ -435,7 +435,7 @@ func TestClient_FindCardByPAN(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -463,7 +463,7 @@ func TestClient_ReissueCard(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.ReissueCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -474,7 +474,7 @@ func TestClient_ReissueCard(t *testing.T) {
 				IssuerCardReissueID: "reissue123",
 				Reason:              "DAMAGED",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":    "card456",
 				"oldCardId": "card123",
 				"status":    "ACTIVE",
@@ -527,7 +527,7 @@ func TestClient_SetCardFunctions(t *testing.T) {
 		request     *types.CardFunctions
 		mockStatus  int
 		wantErr     bool
-		validateReq func(t *testing.T, body map[string]interface{})
+		validateReq func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: set card functions",
@@ -540,7 +540,7 @@ func TestClient_SetCardFunctions(t *testing.T) {
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, true, body["contactlessEnabled"], "contactlessEnabled")
 				AssertEqual(t, true, body["ecommerceEnabled"], "ecommerceEnabled")
 			},
@@ -568,7 +568,7 @@ func TestClient_SetCardFunctions(t *testing.T) {
 				Response: nil,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -594,14 +594,14 @@ func TestClient_GetCardFunctions(t *testing.T) {
 	tests := []struct {
 		name         string
 		cardID       string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:   "success: get card functions",
 			cardID: "card123",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"allowedFunctions": []string{"PURCHASE", "WITHDRAW", "ONLINE"},
 			},
 			mockStatus: http.StatusOK,
@@ -696,14 +696,14 @@ func TestClient_GetCardDataprepStatus(t *testing.T) {
 	tests := []struct {
 		name         string
 		cardID       string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name:   "success: get dataprep status ready",
 			cardID: "card123",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status":    "READY",
 				"timestamp": "2024-01-15T10:30:00Z",
 			},
@@ -713,7 +713,7 @@ func TestClient_GetCardDataprepStatus(t *testing.T) {
 		{
 			name:         "success: get dataprep status pending",
 			cardID:       "card456",
-			mockResponse: map[string]interface{}{"status": "PENDING"},
+			mockResponse: map[string]any{"status": "PENDING"},
 			mockStatus:   http.StatusOK,
 			wantErr:      false,
 		},
@@ -759,7 +759,7 @@ func TestClient_RequestPhysicalCard(t *testing.T) {
 		name         string
 		accountID    string
 		request      *types.PhysicalCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -769,10 +769,10 @@ func TestClient_RequestPhysicalCard(t *testing.T) {
 			request: &types.PhysicalCardRequest{
 				IssuerRequestID: "req123",
 				PsProductCode:   "CARD_STANDARD",
-				Cardholder: map[string]interface{}{
+				Cardholder: map[string]any{
 					"fullName": "JOAO DA SILVA",
 				},
-				CardDeliveryAddress: map[string]interface{}{
+				CardDeliveryAddress: map[string]any{
 					"street":  "Rua das Flores, 123",
 					"city":    "Sao Paulo",
 					"state":   "SP",
@@ -780,7 +780,7 @@ func TestClient_RequestPhysicalCard(t *testing.T) {
 					"country": "BR",
 				},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"cardId":      "card123",
 				"cardStatus":  "EMBOSSING",
 				"last4Digits": "1234",
@@ -833,7 +833,7 @@ func TestClient_RequestVirtualCard(t *testing.T) {
 		name         string
 		accountID    string
 		request      *types.CreateAccountVirtualCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -843,7 +843,7 @@ func TestClient_RequestVirtualCard(t *testing.T) {
 			request: &types.CreateAccountVirtualCardRequest{
 				IssuerRequestID: "req123",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"virtualCardId": "vc123",
 				"cardId":        "card123",
 				"status":        "ACTIVE",
@@ -899,7 +899,7 @@ func TestClient_BlockCard(t *testing.T) {
 		request     *types.BlockCardRequest
 		mockStatus  int
 		wantErr     bool
-		validateReq func(t *testing.T, body map[string]interface{})
+		validateReq func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: block card",
@@ -910,7 +910,7 @@ func TestClient_BlockCard(t *testing.T) {
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "Lost card", body["reason"], "reason")
 			},
 		},
@@ -937,7 +937,7 @@ func TestClient_BlockCard(t *testing.T) {
 				Response: nil,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -1028,7 +1028,7 @@ func TestClient_ChangePin(t *testing.T) {
 		request     *types.ChangePinRequest
 		mockStatus  int
 		wantErr     bool
-		validateReq func(t *testing.T, body map[string]interface{})
+		validateReq func(t *testing.T, body map[string]any)
 	}{
 		{
 			name:   "success: change pin",
@@ -1041,8 +1041,8 @@ func TestClient_ChangePin(t *testing.T) {
 			},
 			mockStatus: http.StatusOK,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
-				newPin, ok := body["newPin"].(map[string]interface{})
+			validateReq: func(t *testing.T, body map[string]any) {
+				newPin, ok := body["newPin"].(map[string]any)
 				if ok {
 					AssertEqual(t, "encrypted-pin-block", newPin["pinBlock"], "pinBlock")
 				}
@@ -1074,7 +1074,7 @@ func TestClient_ChangePin(t *testing.T) {
 				Response: nil,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -1100,7 +1100,7 @@ func TestClient_ListCards(t *testing.T) {
 	tests := []struct {
 		name         string
 		params       *types.ListCardsParams
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -1111,8 +1111,8 @@ func TestClient_ListCards(t *testing.T) {
 				IssuerCardID:           "issuer-card-123",
 				IdentityDocumentNumber: "12345678900",
 			},
-			mockResponse: map[string]interface{}{
-				"cards": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"cards": []map[string]any{
 					{"cardId": "card001", "cardStatus": "ACTIVE"},
 					{"cardId": "card002", "cardStatus": "ACTIVE"},
 				},
@@ -1124,8 +1124,8 @@ func TestClient_ListCards(t *testing.T) {
 		{
 			name:   "success: list all cards",
 			params: nil,
-			mockResponse: map[string]interface{}{
-				"cards": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"cards": []map[string]any{
 					{"cardId": "card001"},
 				},
 				"hasMore": true,
@@ -1140,8 +1140,8 @@ func TestClient_ListCards(t *testing.T) {
 				StartingAfter:  "card100",
 				PANLast4Digits: "1234",
 			},
-			mockResponse: map[string]interface{}{
-				"cards":   []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"cards":   []map[string]any{},
 				"hasMore": false,
 			},
 			mockStatus: http.StatusOK,
@@ -1161,8 +1161,8 @@ func TestClient_ListCards(t *testing.T) {
 				LinkID:                 "lnk-123",
 				AlternativeBindingKey:  "ABK001",
 			},
-			mockResponse: map[string]interface{}{
-				"cards":   []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"cards":   []map[string]any{},
 				"hasMore": false,
 			},
 			mockStatus: http.StatusOK,
@@ -1203,7 +1203,7 @@ func TestClient_BlockAndReissueCard(t *testing.T) {
 		name         string
 		cardID       string
 		request      *types.BlockAndReissueCardRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -1214,7 +1214,7 @@ func TestClient_BlockAndReissueCard(t *testing.T) {
 				BlockCode: 3,
 				Reason:    "Stolen card",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"newCardId":   "card456",
 				"oldCardId":   "card123",
 				"status":      "EMBOSSING",
@@ -1276,7 +1276,7 @@ func TestClient_Cards_EdgeCases(t *testing.T) {
 			Method:   http.MethodGet,
 			Path:     "",
 			Status:   http.StatusOK,
-			Response: map[string]interface{}{},
+			Response: map[string]any{},
 		})
 		defer server.Close()
 
@@ -1301,7 +1301,7 @@ func TestClient_Cards_EdgeCases(t *testing.T) {
 				Method:   http.MethodGet,
 				Path:     "",
 				Status:   http.StatusOK,
-				Response: map[string]interface{}{},
+				Response: map[string]any{},
 			})
 
 			client := NewTestClient(t, server)

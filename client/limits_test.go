@@ -9,7 +9,7 @@ import (
 )
 
 func TestClient_UpdateMaxCreditLimits(t *testing.T) {
-	server := mockServer(t, http.MethodPut, "/accounts/acc123/maxCreditLimits", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPut, "/accounts/acc123/maxCreditLimits", http.StatusOK, map[string]any{
 		"resultCode":        0,
 		"resultDescription": "Success",
 		"issuerRequestId":   "req123",
@@ -45,7 +45,7 @@ func TestClient_UpdateMaxCreditLimits(t *testing.T) {
 }
 
 func TestClient_ChangeUsableCreditLimits(t *testing.T) {
-	server := mockServer(t, http.MethodPut, "/accounts/acc123/changeUsableCreditLimits", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPut, "/accounts/acc123/changeUsableCreditLimits", http.StatusOK, map[string]any{
 		"resultCode":        0,
 		"resultDescription": "Success",
 		"issuerRequestId":   "req456",

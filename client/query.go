@@ -5,6 +5,10 @@ import (
 	"strconv"
 )
 
+// pathParam escapes a path parameter for safe URL interpolation.
+// This prevents path traversal and query injection from crafted IDs.
+func pathParam(s string) string { return url.PathEscape(s) }
+
 // PaginationParams defines common pagination parameters used across list endpoints.
 // These fields are shared by ListAccountsParams, ListCardsParams, ListTransactionsRequest, etc.
 type PaginationParams struct {

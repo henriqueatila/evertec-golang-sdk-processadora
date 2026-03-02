@@ -15,6 +15,13 @@ import (
 	"github.com/henriqueatila/evertec-golang-sdk-processadora/types"
 )
 
+// Non-standard HTTP status codes used by the Evertec authorization protocol.
+const (
+	StatusFraudSuspect        = 459
+	StatusInvalidMCC          = 483
+	StatusDeclinedByProcessor = 499
+)
+
 // Handler defines the interface for authorization handlers.
 // Implement this interface to handle Evertec authorization callbacks.
 // Reference: https://paysmart-api.gitlab.io/processadora/PT-br/docs/compra
@@ -135,6 +142,11 @@ func NewServer(handler Handler, opts ...ServerOption) *Server {
 
 // ServeHTTP implements http.Handler.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if s.handler == nil {
+		writeError(w, http.StatusInternalServerError, fmt.Errorf("handler not configured"))
+		return
+	}
+
 	// Panic recovery if enabled
 	if s.panicRecovery {
 		defer func() {
@@ -959,20 +971,33 @@ func (s *Server) handleCustomProvisioningData(w http.ResponseWriter, r *http.Req
 	writeJSON(w, http.StatusOK, resp)
 }
 
-func writeJSON(w http.ResponseWriter, statusCode int, data interface{}) {
+func writeJSON(w http.ResponseWriter, statusCode int, data any) {
 	w.WriteHeader(statusCode)
 	_ = json.NewEncoder(w).Encode(data)
 }
 
 func writeError(w http.ResponseWriter, statusCode int, err error) {
 	w.WriteHeader(statusCode)
-	_ = json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+	msg := err.Error()
+	if statusCode >= 500 {
+		msg = "internal server error"
+	}
+	_ = json.NewEncoder(w).Encode(map[string]string{"error": msg})
 }
 
 // executeBeforeHooks runs all before hooks and returns the modified context.
 func (s *Server) executeBeforeHooks(ctx context.Context, req *RequestInfo) context.Context {
 	for _, hook := range s.hooks {
-		ctx = hook.BeforeAuthorization(ctx, req)
+		func() {
+			defer func() {
+				if r := recover(); r != nil && s.logger != nil {
+					s.logger.Error("hook panic recovered",
+						slog.Any("panic", r),
+						slog.String("hook_phase", "BeforeAuthorization"))
+				}
+			}()
+			ctx = hook.BeforeAuthorization(ctx, req)
+		}()
 	}
 	return ctx
 }
@@ -980,7 +1005,16 @@ func (s *Server) executeBeforeHooks(ctx context.Context, req *RequestInfo) conte
 // executeAfterHooks runs all after hooks.
 func (s *Server) executeAfterHooks(ctx context.Context, req *RequestInfo, resp *ResponseInfo) {
 	for _, hook := range s.hooks {
-		hook.AfterAuthorization(ctx, req, resp)
+		func() {
+			defer func() {
+				if r := recover(); r != nil && s.logger != nil {
+					s.logger.Error("hook panic recovered",
+						slog.Any("panic", r),
+						slog.String("hook_phase", "AfterAuthorization"))
+				}
+			}()
+			hook.AfterAuthorization(ctx, req, resp)
+		}()
 	}
 }
 
@@ -999,17 +1033,17 @@ func mapResponseCodeToHTTP(code int) int {
 	case 54: // Expired card
 		return http.StatusNotFound // 404
 	case 59: // Fraud suspect
-		return 459
+		return StatusFraudSuspect
 	case 62, 78: // Restricted/blocked card
 		return http.StatusPreconditionFailed // 412
 	case 57, 58: // Invalid MCC
-		return 483
+		return StatusInvalidMCC
 	case 91, 96: // System error
 		return http.StatusServiceUnavailable // 503
 	default:
 		// For other denial codes, return 499 (Acknowledge - declined by processor)
 		if code != 0 {
-			return 499
+			return StatusDeclinedByProcessor
 		}
 		return http.StatusOK
 	}

@@ -29,7 +29,7 @@ func (c *Client) ListFraudNotifications(ctx context.Context) ([]types.FraudNotif
 // GetFraudNotification retrieves a specific fraud notification.
 func (c *Client) GetFraudNotification(ctx context.Context, accountID, transactionID string) (*types.FraudNotification, error) {
 	var resp types.FraudNotification
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/frauds/notification/%s/%s", accountID, transactionID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/frauds/notification/%s/%s", pathParam(accountID), pathParam(transactionID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

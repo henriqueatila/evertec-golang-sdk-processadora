@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"strings"
 	"sync"
@@ -63,6 +64,7 @@ type Server struct {
 	handler        Handler
 	webhookSecret  string
 	hooks          []Hook
+	logger         *slog.Logger
 	mu             sync.RWMutex
 	processedIDs   map[string]idempotencyEntry
 	idempotencyTTL time.Duration
@@ -84,6 +86,10 @@ type Config struct {
 
 	// Hooks are observability hooks for logging, metrics, tracing, etc. (optional)
 	Hooks []Hook
+
+	// Logger is used for internal server logging (e.g., hook panic recovery).
+	// If nil, no internal logging is performed.
+	Logger *slog.Logger
 
 	// MaxBodySize limits the request body size in bytes.
 	// If 0 (default), no limit is applied.
@@ -126,6 +132,7 @@ func NewServer(cfg Config) *Server {
 		handler:        cfg.Handler,
 		webhookSecret:  cfg.WebhookSecret,
 		hooks:          cfg.Hooks,
+		logger:         cfg.Logger,
 		processedIDs:   make(map[string]idempotencyEntry),
 		idempotencyTTL: ttl,
 		maxBodySize:    cfg.MaxBodySize,
@@ -182,6 +189,12 @@ func (s *Server) cleanupExpired() {
 
 // ServeHTTP implements http.Handler.
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if s.handler == nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": "handler not configured"})
+		return
+	}
+
 	start := time.Now()
 	ctx := r.Context()
 
@@ -362,7 +375,16 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // executeBeforeHooks runs all before hooks and returns the modified context.
 func (s *Server) executeBeforeHooks(ctx context.Context, event *EventInfo) context.Context {
 	for _, hook := range s.hooks {
-		ctx = hook.BeforeEvent(ctx, event)
+		func() {
+			defer func() {
+				if r := recover(); r != nil && s.logger != nil {
+					s.logger.Error("hook panic recovered",
+						slog.Any("panic", r),
+						slog.String("hook_phase", "BeforeEvent"))
+				}
+			}()
+			ctx = hook.BeforeEvent(ctx, event)
+		}()
 	}
 	return ctx
 }
@@ -370,7 +392,16 @@ func (s *Server) executeBeforeHooks(ctx context.Context, event *EventInfo) conte
 // executeAfterHooks runs all after hooks.
 func (s *Server) executeAfterHooks(ctx context.Context, event *EventInfo, result *ProcessingInfo) {
 	for _, hook := range s.hooks {
-		hook.AfterEvent(ctx, event, result)
+		func() {
+			defer func() {
+				if r := recover(); r != nil && s.logger != nil {
+					s.logger.Error("hook panic recovered",
+						slog.Any("panic", r),
+						slog.String("hook_phase", "AfterEvent"))
+				}
+			}()
+			hook.AfterEvent(ctx, event, result)
+		}()
 	}
 }
 

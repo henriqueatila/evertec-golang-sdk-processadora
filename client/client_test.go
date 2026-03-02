@@ -383,7 +383,7 @@ func TestClient_RequiredHeaders(t *testing.T) {
 				receivedHeader = r.Header.Get(tt.checkHeader)
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusOK)
-				_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+				_ = json.NewEncoder(w).Encode(map[string]any{})
 			}))
 			defer server.Close()
 
@@ -419,7 +419,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			receivedKey = r.Header.Get("IdempotencyKey")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -465,7 +465,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			receivedKey = r.Header.Get("IdempotencyKey")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -490,7 +490,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			mu.Unlock()
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -520,7 +520,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			receivedKey = r.Header.Get("IdempotencyKey")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -549,7 +549,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			mu.Unlock()
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -585,7 +585,7 @@ func TestClient_IdempotencyKey(t *testing.T) {
 			receivedKey = r.Header.Get("IdempotencyKey")
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
-			_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+			_ = json.NewEncoder(w).Encode(map[string]any{})
 		}))
 		defer server.Close()
 
@@ -615,7 +615,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 	tests := []struct {
 		name           string
 		statusCode     int
-		response       interface{}
+		response       any
 		wantStatusCode int
 		wantCode       string
 		wantMessage    string
@@ -623,7 +623,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "400 Bad Request with error body",
 			statusCode: http.StatusBadRequest,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "INVALID_REQUEST",
 				"message": "Invalid request parameters",
 			},
@@ -634,7 +634,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "401 Unauthorized",
 			statusCode: http.StatusUnauthorized,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "UNAUTHORIZED",
 				"message": "Invalid API key",
 			},
@@ -645,7 +645,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "403 Forbidden",
 			statusCode: http.StatusForbidden,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "FORBIDDEN",
 				"message": "Access denied",
 			},
@@ -656,7 +656,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "404 Not Found",
 			statusCode: http.StatusNotFound,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "NOT_FOUND",
 				"message": "Account not found",
 			},
@@ -667,7 +667,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "409 Conflict",
 			statusCode: http.StatusConflict,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "CONFLICT",
 				"message": "Account already exists",
 			},
@@ -677,7 +677,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "422 Unprocessable Entity",
 			statusCode: http.StatusUnprocessableEntity,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "VALIDATION_ERROR",
 				"message": "Validation failed",
 				"details": []string{"field1 is required", "field2 is invalid"},
@@ -688,7 +688,7 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:       "429 Rate Limited",
 			statusCode: http.StatusTooManyRequests,
-			response: map[string]interface{}{
+			response: map[string]any{
 				"code":    "RATE_LIMITED",
 				"message": "Too many requests",
 			},
@@ -698,21 +698,21 @@ func TestClient_ErrorHandling(t *testing.T) {
 		{
 			name:           "500 Internal Server Error",
 			statusCode:     http.StatusInternalServerError,
-			response:       map[string]interface{}{"code": "INTERNAL_ERROR", "message": "Internal error"},
+			response:       map[string]any{"code": "INTERNAL_ERROR", "message": "Internal error"},
 			wantStatusCode: http.StatusInternalServerError,
 			wantCode:       "INTERNAL_ERROR",
 		},
 		{
 			name:           "503 Service Unavailable",
 			statusCode:     http.StatusServiceUnavailable,
-			response:       map[string]interface{}{"code": "SERVICE_UNAVAILABLE", "message": "Service unavailable"},
+			response:       map[string]any{"code": "SERVICE_UNAVAILABLE", "message": "Service unavailable"},
 			wantStatusCode: http.StatusServiceUnavailable,
 			wantCode:       "SERVICE_UNAVAILABLE",
 		},
 		{
 			name:           "504 Gateway Timeout",
 			statusCode:     http.StatusGatewayTimeout,
-			response:       map[string]interface{}{"code": "TIMEOUT", "message": "Gateway timeout"},
+			response:       map[string]any{"code": "TIMEOUT", "message": "Gateway timeout"},
 			wantStatusCode: http.StatusGatewayTimeout,
 		},
 		{
@@ -965,7 +965,7 @@ func TestClient_ContextCancellation(t *testing.T) {
 			Method:   http.MethodGet,
 			Path:     "/accounts/acc123",
 			Status:   http.StatusOK,
-			Response: map[string]interface{}{},
+			Response: map[string]any{},
 		})
 		defer server.Close()
 
@@ -986,7 +986,7 @@ func TestClient_ContextCancellation(t *testing.T) {
 			Method:   http.MethodGet,
 			Path:     "/accounts/acc123",
 			Status:   http.StatusOK,
-			Response: map[string]interface{}{},
+			Response: map[string]any{},
 			Delay:    500 * time.Millisecond,
 		})
 		defer server.Close()
@@ -1054,7 +1054,7 @@ func TestClient_ConcurrentDifferentEndpoints(t *testing.T) {
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{})
+		_ = json.NewEncoder(w).Encode(map[string]any{})
 	}))
 	defer server.Close()
 
@@ -1196,13 +1196,13 @@ func TestClient_CreateAccount_RequestBody(t *testing.T) {
 	tests := []struct {
 		name        string
 		request     *types.CreateAccountRequest
-		validateReq func(t *testing.T, body map[string]interface{})
+		validateReq func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "full request",
 			request: &types.CreateAccountRequest{
 				PsProductCode: "CREDIT_CARD",
-				AccountOwner: map[string]interface{}{
+				AccountOwner: map[string]any{
 					"fullName":               "Test User",
 					"identityDocumentNumber": "12345678901",
 				},
@@ -1215,21 +1215,21 @@ func TestClient_CreateAccount_RequestBody(t *testing.T) {
 					Country:      "BR",
 					Neighborhood: "Centro",
 				},
-				CardDeliveryAddress: map[string]interface{}{
+				CardDeliveryAddress: map[string]any{
 					"addressLine1": "Rua Test 123",
 					"city":         "Sao Paulo",
 				},
 			},
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "CREDIT_CARD", body["psProductCode"], "psProductCode")
 
-				owner, ok := body["accountOwner"].(map[string]interface{})
+				owner, ok := body["accountOwner"].(map[string]any)
 				if !ok {
 					t.Fatal("accountOwner not found in request")
 				}
 				AssertEqual(t, "Test User", owner["fullName"], "accountOwner.fullName")
 
-				address, ok := body["billingAddress"].(map[string]interface{})
+				address, ok := body["billingAddress"].(map[string]any)
 				if !ok {
 					t.Fatal("billingAddress not found in request")
 				}
@@ -1240,11 +1240,11 @@ func TestClient_CreateAccount_RequestBody(t *testing.T) {
 			name: "minimal request",
 			request: &types.CreateAccountRequest{
 				PsProductCode:       "DEBIT_CARD",
-				AccountOwner:        map[string]interface{}{"fullName": "Test"},
-				BillingAddress:      map[string]interface{}{"city": "SP"},
-				CardDeliveryAddress: map[string]interface{}{"city": "SP"},
+				AccountOwner:        map[string]any{"fullName": "Test"},
+				BillingAddress:      map[string]any{"city": "SP"},
+				CardDeliveryAddress: map[string]any{"city": "SP"},
 			},
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "DEBIT_CARD", body["psProductCode"], "psProductCode")
 			},
 		},
@@ -1259,9 +1259,9 @@ func TestClient_CreateAccount_RequestBody(t *testing.T) {
 				Method:   http.MethodPost,
 				Path:     "/accounts",
 				Status:   http.StatusCreated,
-				Response: map[string]interface{}{"accountId": "acc123"},
+				Response: map[string]any{"accountId": "acc123"},
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
-					var reqBody map[string]interface{}
+					var reqBody map[string]any
 					if err := json.Unmarshal(body, &reqBody); err != nil {
 						t.Fatalf("failed to unmarshal request body: %v", err)
 					}
@@ -1287,15 +1287,15 @@ func TestClient_GetAccount_ResponseValidation(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		mockResponse interface{}
+		mockResponse any
 		validate     func(t *testing.T, resp *types.Account)
 	}{
 		{
 			name: "full response",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"accountId":     "acc-12345",
 				"psProductCode": "CREDIT_CARD",
-				"accountOwner": map[string]interface{}{
+				"accountOwner": map[string]any{
 					"fullName":               "John Doe",
 					"identityDocumentNumber": "12345678901",
 				},
@@ -1308,10 +1308,10 @@ func TestClient_GetAccount_ResponseValidation(t *testing.T) {
 		},
 		{
 			name: "minimal response",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"accountId":     "acc-minimal",
 				"psProductCode": "DEBIT_CARD",
-				"accountOwner":  map[string]interface{}{"fullName": "Test"},
+				"accountOwner":  map[string]any{"fullName": "Test"},
 			},
 			validate: func(t *testing.T, resp *types.Account) {
 				AssertEqual(t, "acc-minimal", resp.AccountID, "AccountID")
@@ -1361,16 +1361,16 @@ func BenchmarkClient_GetAccount(b *testing.B) {
 }
 
 func BenchmarkClient_CreateAccount(b *testing.B) {
-	server := NewBenchmarkMockServer(map[string]interface{}{"accountId": "acc123"})
+	server := NewBenchmarkMockServer(map[string]any{"accountId": "acc123"})
 	defer server.Close()
 
 	client := NewBenchmarkClient(b, server.URL)
 	ctx := context.Background()
 	req := &types.CreateAccountRequest{
 		PsProductCode:       "CREDIT",
-		AccountOwner:        map[string]interface{}{"fullName": "Benchmark User"},
-		BillingAddress:      map[string]interface{}{"city": "SP"},
-		CardDeliveryAddress: map[string]interface{}{"city": "SP"},
+		AccountOwner:        map[string]any{"fullName": "Benchmark User"},
+		BillingAddress:      map[string]any{"city": "SP"},
+		CardDeliveryAddress: map[string]any{"city": "SP"},
 	}
 
 	b.ResetTimer()

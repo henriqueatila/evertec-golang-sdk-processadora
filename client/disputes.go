@@ -35,7 +35,7 @@ func (c *Client) CreateDispute(ctx context.Context, req *types.CreateDisputeRequ
 // GetDispute retrieves a dispute by ID.
 func (c *Client) GetDispute(ctx context.Context, disputeID string) (*types.Dispute, error) {
 	var resp types.Dispute
-	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/disputes/%s", disputeID), nil, &resp); err != nil {
+	if err := c.request(ctx, http.MethodGet, fmt.Sprintf("/disputes/%s", pathParam(disputeID)), nil, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -43,13 +43,13 @@ func (c *Client) GetDispute(ctx context.Context, disputeID string) (*types.Dispu
 
 // CancelDispute cancels a dispute (undo).
 func (c *Client) CancelDispute(ctx context.Context, disputeID string, req *types.CancelDisputeRequest) error {
-	return c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/undo", disputeID), req, nil)
+	return c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/undo", pathParam(disputeID)), req, nil)
 }
 
 // AttachDisputeDocument attaches a document to an existing dispute.
 func (c *Client) AttachDisputeDocument(ctx context.Context, disputeID string, req *types.DisputeDocumentRequest) (*types.DisputeDocumentCreatedSuccessfully, error) {
 	var resp types.DisputeDocumentCreatedSuccessfully
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/documents", disputeID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/documents", pathParam(disputeID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil
@@ -58,7 +58,7 @@ func (c *Client) AttachDisputeDocument(ctx context.Context, disputeID string, re
 // RespondToDispute responds to a dispute ruling (accept or continue to next phase).
 func (c *Client) RespondToDispute(ctx context.Context, disputeID string, req *types.DisputeResponseRequest) (*types.DisputeResponseCreatedSuccessfully, error) {
 	var resp types.DisputeResponseCreatedSuccessfully
-	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/response", disputeID), req, &resp); err != nil {
+	if err := c.request(ctx, http.MethodPost, fmt.Sprintf("/disputes/%s/response", pathParam(disputeID)), req, &resp); err != nil {
 		return nil, err
 	}
 	return &resp, nil

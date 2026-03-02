@@ -9,7 +9,7 @@ import (
 )
 
 func TestClient_GetCampaign(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/campaigns/camp123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/campaigns/camp123", http.StatusOK, map[string]any{
 		"campaignId": "camp123",
 		"name":       "Test Campaign",
 	})
@@ -27,7 +27,7 @@ func TestClient_GetCampaign(t *testing.T) {
 }
 
 func TestClient_UpdateCampaign(t *testing.T) {
-	server := mockServer(t, http.MethodPut, "/campaigns/camp123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPut, "/campaigns/camp123", http.StatusOK, map[string]any{
 		"campaignId": "camp123",
 	})
 	defer server.Close()
@@ -56,8 +56,8 @@ func TestClient_UpdateCampaignStatus(t *testing.T) {
 }
 
 func TestClient_GetCampaignAccounts(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/campaigns/camp123/accounts", http.StatusOK, map[string]interface{}{
-		"accounts": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/campaigns/camp123/accounts", http.StatusOK, map[string]any{
+		"accounts": []map[string]any{
 			{"accountId": "acc1"},
 		},
 	})
@@ -75,7 +75,7 @@ func TestClient_GetCampaignAccounts(t *testing.T) {
 }
 
 func TestClient_GetAgent(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/agents/agent123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/agents/agent123", http.StatusOK, map[string]any{
 		"agentId": "agent123",
 	})
 	defer server.Close()
@@ -92,7 +92,7 @@ func TestClient_GetAgent(t *testing.T) {
 }
 
 func TestClient_UpdateAgent(t *testing.T) {
-	server := mockServer(t, http.MethodPut, "/agents/agent123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPut, "/agents/agent123", http.StatusOK, map[string]any{
 		"agentId": "agent123",
 	})
 	defer server.Close()
@@ -126,7 +126,7 @@ func TestClient_CreateAgent(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.AgentObject
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
@@ -141,7 +141,7 @@ func TestClient_CreateAgent(t *testing.T) {
 				Email:       "test@example.com",
 				ContactName: "John Doe",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"agentId":     "agent123",
 				"companyName": "Test Company",
 			},
@@ -159,7 +159,7 @@ func TestClient_CreateAgent(t *testing.T) {
 				Email:       "minimal@example.com",
 				ContactName: "Jane Doe",
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"agentId": "agent456",
 			},
 			mockStatus: http.StatusCreated,

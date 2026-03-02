@@ -15,10 +15,10 @@ func TestClient_CreateInclusiveTransaction(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.InclusiveTransactionRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
-		validateReq  func(t *testing.T, body map[string]interface{})
+		validateReq  func(t *testing.T, body map[string]any)
 	}{
 		{
 			name: "success: create inclusive transaction",
@@ -31,14 +31,14 @@ func TestClient_CreateInclusiveTransaction(t *testing.T) {
 				Partial:       false,
 				Amount:        types.Amount{Amount: 10000, CurrencyCode: 986},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"inclusiveTransactionId": "inc123",
 				"status":                 "COMPLETED",
 				"code":                   "TE10",
 			},
 			mockStatus: http.StatusCreated,
 			wantErr:    false,
-			validateReq: func(t *testing.T, body map[string]interface{}) {
+			validateReq: func(t *testing.T, body map[string]any) {
 				AssertEqual(t, "TE10", body["code"], "code")
 				AssertEqual(t, "acc123", body["accountId"], "accountId")
 			},
@@ -54,7 +54,7 @@ func TestClient_CreateInclusiveTransaction(t *testing.T) {
 				Partial:       true,
 				Amount:        types.Amount{Amount: 5000, CurrencyCode: 986},
 			},
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"inclusiveTransactionId": "inc456",
 				"status":                 "COMPLETED",
 				"code":                   "TE20",
@@ -104,7 +104,7 @@ func TestClient_CreateInclusiveTransaction(t *testing.T) {
 				Response: tt.mockResponse,
 				ValidateReq: func(t *testing.T, r *http.Request, body []byte) {
 					if tt.validateReq != nil {
-						var reqBody map[string]interface{}
+						var reqBody map[string]any
 						_ = json.Unmarshal(body, &reqBody)
 						tt.validateReq(t, reqBody)
 					}
@@ -131,18 +131,18 @@ func TestClient_GetInclusiveTransaction(t *testing.T) {
 	tests := []struct {
 		name                   string
 		inclusiveTransactionID string
-		mockResponse           interface{}
+		mockResponse           any
 		mockStatus             int
 		wantErr                bool
 	}{
 		{
 			name:                   "success: get inclusive transaction",
 			inclusiveTransactionID: "inc123",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"inclusiveTransactionId": "inc123",
 				"status":                 "COMPLETED",
 				"code":                   "TE10",
-				"amount":                 map[string]interface{}{"amount": 10000, "currencyCode": 986},
+				"amount":                 map[string]any{"amount": 10000, "currencyCode": 986},
 				"accountId":              "acc123",
 			},
 			mockStatus: http.StatusOK,
@@ -151,7 +151,7 @@ func TestClient_GetInclusiveTransaction(t *testing.T) {
 		{
 			name:                   "success: get pending inclusive transaction",
 			inclusiveTransactionID: "inc456",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"inclusiveTransactionId": "inc456",
 				"status":                 "PENDING",
 				"code":                   "TE20",

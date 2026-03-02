@@ -11,15 +11,15 @@ func TestClient_GetHealthStatus(t *testing.T) {
 
 	tests := []struct {
 		name         string
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 	}{
 		{
 			name: "success: get health status - all healthy",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status": "healthy",
-				"services": map[string]interface{}{
+				"services": map[string]any{
 					"database":     "healthy",
 					"cache":        "healthy",
 					"messageQueue": "healthy",
@@ -32,9 +32,9 @@ func TestClient_GetHealthStatus(t *testing.T) {
 		},
 		{
 			name: "success: get health status - degraded",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status": "degraded",
-				"services": map[string]interface{}{
+				"services": map[string]any{
 					"database":     "healthy",
 					"cache":        "degraded",
 					"messageQueue": "healthy",
@@ -46,9 +46,9 @@ func TestClient_GetHealthStatus(t *testing.T) {
 		},
 		{
 			name: "success: get health status - unhealthy",
-			mockResponse: map[string]interface{}{
+			mockResponse: map[string]any{
 				"status": "unhealthy",
-				"services": map[string]interface{}{
+				"services": map[string]any{
 					"database": "unhealthy",
 					"cache":    "healthy",
 				},

@@ -22,7 +22,7 @@ func TestClient_WithTimeout(t *testing.T) {
 // Travel notice tests
 
 func TestClient_ListTravelNotices(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/accounts/acc123/travelNotice", http.StatusOK, []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/accounts/acc123/travelNotice", http.StatusOK, []map[string]any{
 		{"noticeId": "notice1"},
 	})
 	defer server.Close()
@@ -39,7 +39,7 @@ func TestClient_ListTravelNotices(t *testing.T) {
 }
 
 func TestClient_GetTravelNotice(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/accounts/acc123/travelNotice/notice1", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/accounts/acc123/travelNotice/notice1", http.StatusOK, map[string]any{
 		"noticeId": "notice1",
 	})
 	defer server.Close()
@@ -56,7 +56,7 @@ func TestClient_GetTravelNotice(t *testing.T) {
 }
 
 func TestClient_UpdateTravelNotice(t *testing.T) {
-	server := mockServer(t, http.MethodPut, "/accounts/acc123/travelNotice/notice1", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPut, "/accounts/acc123/travelNotice/notice1", http.StatusOK, map[string]any{
 		"noticeId": "notice1",
 	})
 	defer server.Close()
@@ -75,7 +75,7 @@ func TestClient_UpdateTravelNotice(t *testing.T) {
 // Virtual card tests
 
 func TestClient_CreateCardVirtualCard(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/cards/card123/virtualcards", http.StatusCreated, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/cards/card123/virtualcards", http.StatusCreated, map[string]any{
 		"virtualCardId": "vcard123",
 	})
 	defer server.Close()
@@ -92,8 +92,8 @@ func TestClient_CreateCardVirtualCard(t *testing.T) {
 }
 
 func TestClient_ListCardVirtualCards(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/cards/card123/virtualcards/list", http.StatusOK, map[string]interface{}{
-		"virtualCards": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/cards/card123/virtualcards/list", http.StatusOK, map[string]any{
+		"virtualCards": []map[string]any{
 			{"virtualCardId": "vcard1"},
 		},
 	})
@@ -111,7 +111,7 @@ func TestClient_ListCardVirtualCards(t *testing.T) {
 }
 
 func TestClient_ModifyVirtualCardCVV(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/virtualcards/vcard123/modify/cvv", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/virtualcards/vcard123/modify/cvv", http.StatusOK, map[string]any{
 		"newCvv": "123",
 	})
 	defer server.Close()
@@ -131,7 +131,7 @@ func TestClient_ModifyVirtualCardCVV(t *testing.T) {
 
 func TestClient_SuspendOrResumeDeviceTokensByCard(t *testing.T) {
 	// API returns array of DeviceToken directly per official spec
-	server := mockServer(t, http.MethodPost, "/cards/card123/deviceTokens/suspendOrResume", http.StatusOK, []map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/cards/card123/deviceTokens/suspendOrResume", http.StatusOK, []map[string]any{
 		{"deviceTokenId": "token-001", "suspensionStatus": "SUSPENDED"},
 	})
 	defer server.Close()
@@ -149,7 +149,7 @@ func TestClient_SuspendOrResumeDeviceTokensByCard(t *testing.T) {
 
 func TestClient_TerminateDeviceTokensByCard(t *testing.T) {
 	// API returns array of DeviceToken directly per official spec
-	server := mockServer(t, http.MethodPost, "/cards/card123/deviceTokens/terminate", http.StatusOK, []map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/cards/card123/deviceTokens/terminate", http.StatusOK, []map[string]any{
 		{"deviceTokenId": "token-001", "activationStatus": "TERMINATED"},
 	})
 	defer server.Close()
@@ -168,8 +168,8 @@ func TestClient_TerminateDeviceTokensByCard(t *testing.T) {
 // Installments tests
 
 func TestClient_GetInstallmentOptions(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/accounts/acc123/installmentSimulation", http.StatusOK, map[string]interface{}{
-		"options": []map[string]interface{}{},
+	server := mockServer(t, http.MethodGet, "/accounts/acc123/installmentSimulation", http.StatusOK, map[string]any{
+		"options": []map[string]any{},
 	})
 	defer server.Close()
 
@@ -185,8 +185,8 @@ func TestClient_GetInstallmentOptions(t *testing.T) {
 }
 
 func TestClient_SimulateAdvancePayment(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceSimulation/txn123", http.StatusOK, map[string]interface{}{
-		"simulation": map[string]interface{}{},
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceSimulation/txn123", http.StatusOK, map[string]any{
+		"simulation": map[string]any{},
 	})
 	defer server.Close()
 
@@ -202,7 +202,7 @@ func TestClient_SimulateAdvancePayment(t *testing.T) {
 }
 
 func TestClient_RequestAdvancePayment(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceRequest/txn123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/accounts/acc123/installmentAdvanceRequest/txn123", http.StatusOK, map[string]any{
 		"resultCode": 0,
 	})
 	defer server.Close()
@@ -221,8 +221,8 @@ func TestClient_RequestAdvancePayment(t *testing.T) {
 // Status tests
 
 func TestClient_ListDataprepStatus(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/dataprepstatus", http.StatusOK, map[string]interface{}{
-		"data": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/dataprepstatus", http.StatusOK, map[string]any{
+		"data": []map[string]any{
 			{"status": "READY"},
 		},
 	})
@@ -240,7 +240,7 @@ func TestClient_ListDataprepStatus(t *testing.T) {
 }
 
 func TestClient_GetDataprepStatus(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/dataprepstatus/batch123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/dataprepstatus/batch123", http.StatusOK, map[string]any{
 		"status": "READY",
 	})
 	defer server.Close()
@@ -259,7 +259,7 @@ func TestClient_GetDataprepStatus(t *testing.T) {
 // Fraud tests
 
 func TestClient_GetFraudNotification(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/frauds/notification/acc123/txn123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/frauds/notification/acc123/txn123", http.StatusOK, map[string]any{
 		"notificationId": "fraud123",
 	})
 	defer server.Close()
@@ -290,7 +290,7 @@ func TestClient_UndoFraudNotification(t *testing.T) {
 // HCE tests
 
 func TestClient_UnprovisionHCE(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/hce/unprovision/device123", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/hce/unprovision/device123", http.StatusOK, map[string]any{
 		"success": true,
 	})
 	defer server.Close()
@@ -309,8 +309,8 @@ func TestClient_UnprovisionHCE(t *testing.T) {
 // Inclusives tests
 
 func TestClient_ListInclusiveTransactions(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/inclusives", http.StatusOK, map[string]interface{}{
-		"transactions": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/inclusives", http.StatusOK, map[string]any{
+		"transactions": []map[string]any{
 			{"transactionId": "txn123"},
 		},
 	})
@@ -328,7 +328,7 @@ func TestClient_ListInclusiveTransactions(t *testing.T) {
 }
 
 func TestClient_UndoInclusiveTransaction(t *testing.T) {
-	server := mockServer(t, http.MethodPost, "/inclusives/txn123/undo", http.StatusOK, map[string]interface{}{
+	server := mockServer(t, http.MethodPost, "/inclusives/txn123/undo", http.StatusOK, map[string]any{
 		"success": true,
 	})
 	defer server.Close()
@@ -347,8 +347,8 @@ func TestClient_UndoInclusiveTransaction(t *testing.T) {
 // Cobranded tests
 
 func TestClient_ListCobranded(t *testing.T) {
-	server := mockServer(t, http.MethodGet, "/cobranded", http.StatusOK, map[string]interface{}{
-		"data": []map[string]interface{}{
+	server := mockServer(t, http.MethodGet, "/cobranded", http.StatusOK, map[string]any{
+		"data": []map[string]any{
 			{"cobrandedId": "cob123"},
 		},
 	})

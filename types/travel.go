@@ -21,7 +21,7 @@ type NewTravelNotice struct {
 
 // TravelNoticeCreatedSuccessfully from OpenAPI spec.
 type TravelNoticeCreatedSuccessfully struct {
-	ResultData   interface{}  `json:"resultData"`
+	ResultData   any  `json:"resultData"`
 	TravelNotice TravelNotice `json:"travelNotice"`
 }
 

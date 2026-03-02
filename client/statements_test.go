@@ -14,7 +14,7 @@ func TestClient_GetClosedStatements(t *testing.T) {
 	tests := []struct {
 		name         string
 		request      *types.ClosedStatementsRequest
-		mockResponse interface{}
+		mockResponse any
 		mockStatus   int
 		wantErr      bool
 		validateReq  func(t *testing.T, r *http.Request)
@@ -22,8 +22,8 @@ func TestClient_GetClosedStatements(t *testing.T) {
 		{
 			name:    "success: get closed statements without params",
 			request: nil,
-			mockResponse: map[string]interface{}{
-				"statements": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"statements": []map[string]any{
 					{
 						"statementId":   "stmt001",
 						"accountId":     "acc001",
@@ -51,8 +51,8 @@ func TestClient_GetClosedStatements(t *testing.T) {
 			request: &types.ClosedStatementsRequest{
 				ClosingDateQuery: "2024-01-15",
 			},
-			mockResponse: map[string]interface{}{
-				"statements": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"statements": []map[string]any{
 					{
 						"statementId": "stmt001",
 						"closingDate": "2024-01-15",
@@ -73,8 +73,8 @@ func TestClient_GetClosedStatements(t *testing.T) {
 			request: &types.ClosedStatementsRequest{
 				StartingAfter: "stmt100",
 			},
-			mockResponse: map[string]interface{}{
-				"statements": []map[string]interface{}{
+			mockResponse: map[string]any{
+				"statements": []map[string]any{
 					{
 						"statementId": "stmt101",
 						"closingDate": "2024-01-15",
@@ -96,8 +96,8 @@ func TestClient_GetClosedStatements(t *testing.T) {
 				ClosingDateQuery: "2024-01-15",
 				StartingAfter:    "stmt100",
 			},
-			mockResponse: map[string]interface{}{
-				"statements": []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"statements": []map[string]any{},
 				"hasMore":    false,
 			},
 			mockStatus: http.StatusOK,
@@ -116,8 +116,8 @@ func TestClient_GetClosedStatements(t *testing.T) {
 			request: &types.ClosedStatementsRequest{
 				ClosingDateQuery: "2020-01-01",
 			},
-			mockResponse: map[string]interface{}{
-				"statements": []map[string]interface{}{},
+			mockResponse: map[string]any{
+				"statements": []map[string]any{},
 				"hasMore":    false,
 			},
 			mockStatus: http.StatusOK,

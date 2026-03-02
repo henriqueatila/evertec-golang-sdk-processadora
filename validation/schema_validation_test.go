@@ -26,7 +26,7 @@ func TestAccount_SchemaCompliance(t *testing.T) {
 	}
 
 	// Verify JSON contains expected fields
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	if err := json.Unmarshal(data, &jsonMap); err != nil {
 		t.Fatalf("Failed to unmarshal to map: %v", err)
 	}
@@ -54,7 +54,7 @@ func TestCard_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal Card: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// cardId should serialize to "cardId" not "card_id"
@@ -79,7 +79,7 @@ func TestTransaction_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal Transaction: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	requiredFields := []string{"transactionId", "amount"}
@@ -90,7 +90,7 @@ func TestTransaction_SchemaCompliance(t *testing.T) {
 	}
 
 	// Verify amount structure
-	if amount, ok := jsonMap["amount"].(map[string]interface{}); ok {
+	if amount, ok := jsonMap["amount"].(map[string]any); ok {
 		if _, ok := amount["amount"]; !ok {
 			t.Error("Amount missing 'amount' field")
 		}
@@ -113,7 +113,7 @@ func TestTravelNotice_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal TravelNotice: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Verify date format (should be YYYY-MM-DD)
@@ -138,7 +138,7 @@ func TestNewTravelNotice_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal NewTravelNotice: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Required fields per OpenAPI
@@ -165,7 +165,7 @@ func TestDispute_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal Dispute: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	if _, ok := jsonMap["disputeId"]; !ok {
@@ -192,7 +192,7 @@ func TestInclusiveTransaction_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal InclusiveTransaction: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Verify code is TE10 or TE20
@@ -215,7 +215,7 @@ func TestDeviceToken_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal DeviceToken: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	if _, ok := jsonMap["deviceTokenId"]; !ok {
@@ -252,7 +252,7 @@ func TestResultData_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal ResultData: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// resultCode should be integer
@@ -278,7 +278,7 @@ func TestAmount_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal Amount: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// amount should be integer (centavos)
@@ -313,7 +313,7 @@ func TestVirtualCard_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal VirtualCardDescriptor: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Verify all required fields
@@ -345,7 +345,7 @@ func TestCampaign_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal CampaignObject: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Required fields
@@ -368,7 +368,7 @@ func TestParseQrCodeParams_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal ParseQrCodeParams: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// qrCode is required
@@ -387,7 +387,7 @@ func TestParseQrCodeParams_SchemaCompliance(t *testing.T) {
 // TestHCEProvision_SchemaCompliance validates HCE provisioning types
 func TestHCEProvision_SchemaCompliance(t *testing.T) {
 	req := types.HCEProvisionRequest{
-		Mtv: map[string]interface{}{
+		Mtv: map[string]any{
 			"prov_data":        "encrypted_data_here",
 			"issuer_device_id": "device456",
 		},
@@ -398,11 +398,11 @@ func TestHCEProvision_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal HCEProvisionRequest: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Verify MTV structure exists
-	if mtv, ok := jsonMap["mtv"].(map[string]interface{}); ok {
+	if mtv, ok := jsonMap["mtv"].(map[string]any); ok {
 		if _, ok := mtv["prov_data"]; !ok {
 			t.Error("mtv.prov_data is required for HCE provisioning")
 		}
@@ -430,7 +430,7 @@ func TestCobranded_SchemaCompliance(t *testing.T) {
 		t.Fatalf("Failed to marshal MerchantVanRequest: %v", err)
 	}
 
-	var jsonMap map[string]interface{}
+	var jsonMap map[string]any
 	_ = json.Unmarshal(data, &jsonMap)
 
 	// Required fields
