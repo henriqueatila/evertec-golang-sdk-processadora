@@ -26,25 +26,25 @@ const (
 type Handler interface {
 	// OnDisputeStatusChange is called when a dispute status changes.
 	// EventType: DISPUTE_STATUS_CHANGE
-	OnDisputeStatusChange(event *DisputeStatusChangeEvent) error
+	OnDisputeStatusChange(ctx context.Context, event *DisputeStatusChangeEvent) error
 
 	// OnStatementClosed is called when an invoice/statement closes.
 	// EventType: STATEMENT_CLOSED_NOTIFICATION
 	// Only for post-paid accounts.
-	OnStatementClosed(event *StatementClosedEvent) error
+	OnStatementClosed(ctx context.Context, event *StatementClosedEvent) error
 
 	// OnPaymentDue is called when a payment deadline approaches.
 	// EventType: PAYMENT_DUE_NOTIFICATION
 	// Only for post-paid accounts.
-	OnPaymentDue(event *PaymentDueEvent) error
+	OnPaymentDue(ctx context.Context, event *PaymentDueEvent) error
 
 	// OnCardStatusChange is called when card status transitions.
 	// EventType: CARD_STATUS_CHANGE
-	OnCardStatusChange(event *CardStatusChangeEvent) error
+	OnCardStatusChange(ctx context.Context, event *CardStatusChangeEvent) error
 
 	// OnDeviceTokenStatus is called when digital wallet token status changes.
 	// EventType: DEVICE_TOKEN_STATUS_NOTIFICATION
-	OnDeviceTokenStatus(event *DeviceTokenStatusEvent) error
+	OnDeviceTokenStatus(ctx context.Context, event *DeviceTokenStatusEvent) error
 }
 
 // idempotencyEntry stores an event ID with its timestamp for TTL cleanup.
@@ -340,7 +340,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Process event based on type
 	// Errors are intentionally ignored - we return success to prevent retries.
 	// The error is passed to hooks for logging/metrics.
-	processErr := s.processEvent(eventWrapper.EventType, eventWrapper.Data)
+	processErr := s.processEvent(ctx, eventWrapper.EventType, eventWrapper.Data)
 
 	// Mark as processed (thread-safe with double-checked locking)
 	// Only mark if we got past the idempotency checks (eventID != "" and no duplicate detected)
@@ -417,42 +417,42 @@ func (s *Server) verifySignature(payload []byte, signature string) bool {
 	return hmac.Equal([]byte(expected), []byte(signature))
 }
 
-func (s *Server) processEvent(eventType EventType, data json.RawMessage) error {
+func (s *Server) processEvent(ctx context.Context, eventType EventType, data json.RawMessage) error {
 	switch eventType {
 	case EventTypeDisputeStatusChange:
 		var event DisputeStatusChangeEvent
 		if err := json.Unmarshal(data, &event); err != nil {
 			return fmt.Errorf("failed to parse dispute status change event: %w", err)
 		}
-		return s.handler.OnDisputeStatusChange(&event)
+		return s.handler.OnDisputeStatusChange(ctx, &event)
 
 	case EventTypeStatementClosed:
 		var event StatementClosedEvent
 		if err := json.Unmarshal(data, &event); err != nil {
 			return fmt.Errorf("failed to parse statement closed event: %w", err)
 		}
-		return s.handler.OnStatementClosed(&event)
+		return s.handler.OnStatementClosed(ctx, &event)
 
 	case EventTypePaymentDue:
 		var event PaymentDueEvent
 		if err := json.Unmarshal(data, &event); err != nil {
 			return fmt.Errorf("failed to parse payment due event: %w", err)
 		}
-		return s.handler.OnPaymentDue(&event)
+		return s.handler.OnPaymentDue(ctx, &event)
 
 	case EventTypeCardStatusChange:
 		var event CardStatusChangeEvent
 		if err := json.Unmarshal(data, &event); err != nil {
 			return fmt.Errorf("failed to parse card status change event: %w", err)
 		}
-		return s.handler.OnCardStatusChange(&event)
+		return s.handler.OnCardStatusChange(ctx, &event)
 
 	case EventTypeDeviceTokenStatus:
 		var event DeviceTokenStatusEvent
 		if err := json.Unmarshal(data, &event); err != nil {
 			return fmt.Errorf("failed to parse device token status event: %w", err)
 		}
-		return s.handler.OnDeviceTokenStatus(&event)
+		return s.handler.OnDeviceTokenStatus(ctx, &event)
 
 	default:
 		return fmt.Errorf("unknown event type: %s", eventType)
@@ -463,23 +463,23 @@ func (s *Server) processEvent(eventType EventType, data json.RawMessage) error {
 // Embed this in your handler to only implement the methods you need.
 type BaseHandler struct{}
 
-func (h *BaseHandler) OnDisputeStatusChange(event *DisputeStatusChangeEvent) error {
+func (h *BaseHandler) OnDisputeStatusChange(_ context.Context, _ *DisputeStatusChangeEvent) error {
 	return nil
 }
 
-func (h *BaseHandler) OnStatementClosed(event *StatementClosedEvent) error {
+func (h *BaseHandler) OnStatementClosed(_ context.Context, _ *StatementClosedEvent) error {
 	return nil
 }
 
-func (h *BaseHandler) OnPaymentDue(event *PaymentDueEvent) error {
+func (h *BaseHandler) OnPaymentDue(_ context.Context, _ *PaymentDueEvent) error {
 	return nil
 }
 
-func (h *BaseHandler) OnCardStatusChange(event *CardStatusChangeEvent) error {
+func (h *BaseHandler) OnCardStatusChange(_ context.Context, _ *CardStatusChangeEvent) error {
 	return nil
 }
 
-func (h *BaseHandler) OnDeviceTokenStatus(event *DeviceTokenStatusEvent) error {
+func (h *BaseHandler) OnDeviceTokenStatus(_ context.Context, _ *DeviceTokenStatusEvent) error {
 	return nil
 }
 

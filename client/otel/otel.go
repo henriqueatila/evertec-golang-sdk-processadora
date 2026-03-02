@@ -25,7 +25,7 @@ import (
 
 const (
 	tracerName = "github.com/henriqueatila/evertec-golang-sdk-processadora"
-	sdkVersion = "1.0.0"
+	sdkVersion = "2.0.0"
 )
 
 // TracingHook implements client.Hook with OpenTelemetry tracing.

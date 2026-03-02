@@ -3,4 +3,4 @@ package evertec
 
 // Version is the current SDK version.
 // This follows semantic versioning (https://semver.org/).
-const Version = "1.0.0"
+const Version = "2.0.0"

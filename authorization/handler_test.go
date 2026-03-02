@@ -48,63 +48,63 @@ type mockHandler struct {
 	statusError                  error
 }
 
-func (m *mockHandler) HandlePurchase(req *PurchaseRequest) (*PurchaseResponse, error) {
+func (m *mockHandler) HandlePurchase(_ context.Context, req *PurchaseRequest) (*PurchaseResponse, error) {
 	return m.purchaseResponse, m.purchaseError
 }
 
-func (m *mockHandler) HandlePurchaseCancel(req *PurchaseCancellationRequest) (*CancellationResponse, error) {
+func (m *mockHandler) HandlePurchaseCancel(_ context.Context, req *PurchaseCancellationRequest) (*CancellationResponse, error) {
 	return m.purchaseCancellationResponse, m.purchaseCancellationError
 }
 
-func (m *mockHandler) HandleQuery(req *QueryRequest) (*QueryResponse, error) {
+func (m *mockHandler) HandleQuery(_ context.Context, req *QueryRequest) (*QueryResponse, error) {
 	return m.queryResponse, m.queryError
 }
 
-func (m *mockHandler) HandleWithdrawal(req *WithdrawalRequest) (*WithdrawalResponse, error) {
+func (m *mockHandler) HandleWithdrawal(_ context.Context, req *WithdrawalRequest) (*WithdrawalResponse, error) {
 	return m.withdrawalResponse, m.withdrawalError
 }
 
-func (m *mockHandler) HandleWithdrawalQuery(req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error) {
+func (m *mockHandler) HandleWithdrawalQuery(_ context.Context, req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error) {
 	return m.withdrawalQueryResponse, m.withdrawalQueryError
 }
 
-func (m *mockHandler) HandleWithdrawalCancel(req *WithdrawalCancellationRequest) (*CancellationResponse, error) {
+func (m *mockHandler) HandleWithdrawalCancel(_ context.Context, req *WithdrawalCancellationRequest) (*CancellationResponse, error) {
 	return m.withdrawalCancellationResp, m.withdrawalCancellationError
 }
 
-func (m *mockHandler) HandleChargeback(req *ChargebackRequest) (*ChargebackResponse, error) {
+func (m *mockHandler) HandleChargeback(_ context.Context, req *ChargebackRequest) (*ChargebackResponse, error) {
 	return m.chargebackResponse, m.chargebackError
 }
 
-func (m *mockHandler) HandleChargebackCancel(req *ChargebackCancellationRequest) (*CancellationResponse, error) {
+func (m *mockHandler) HandleChargebackCancel(_ context.Context, req *ChargebackCancellationRequest) (*CancellationResponse, error) {
 	return m.chargebackCancellationResp, m.chargebackCancellationError
 }
 
-func (m *mockHandler) HandleTransfer(req *TransferRequest) (*TransferResponse, error) {
+func (m *mockHandler) HandleTransfer(_ context.Context, req *TransferRequest) (*TransferResponse, error) {
 	return m.transferResponse, m.transferError
 }
 
-func (m *mockHandler) HandleTransferCancel(req *TransferCancellationRequest) (*CancellationResponse, error) {
+func (m *mockHandler) HandleTransferCancel(_ context.Context, req *TransferCancellationRequest) (*CancellationResponse, error) {
 	return m.transferCancellationResp, m.transferCancellationError
 }
 
-func (m *mockHandler) HandleGetOTPChannel(req *OTPChannelRequest) (*OTPChannelResponse, error) {
+func (m *mockHandler) HandleGetOTPChannel(_ context.Context, req *OTPChannelRequest) (*OTPChannelResponse, error) {
 	return m.otpChannelResponse, m.otpChannelError
 }
 
-func (m *mockHandler) HandleVerifyTransaction(req *VerifyTransactionRequest) (*VerifyTransactionResponse, error) {
+func (m *mockHandler) HandleVerifyTransaction(_ context.Context, req *VerifyTransactionRequest) (*VerifyTransactionResponse, error) {
 	return m.verifyTransactionResponse, m.verifyTransactionError
 }
 
-func (m *mockHandler) HandleXPaysOTP(req *XPaysOTPRequest) (*XPaysOTPResponse, error) {
+func (m *mockHandler) HandleXPaysOTP(_ context.Context, req *XPaysOTPRequest) (*XPaysOTPResponse, error) {
 	return m.xpaysOTPResponse, m.xpaysOTPError
 }
 
-func (m *mockHandler) HandleCustomProvisioningData(req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error) {
+func (m *mockHandler) HandleCustomProvisioningData(_ context.Context, req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error) {
 	return m.customProvisioningResponse, m.customProvisioningError
 }
 
-func (m *mockHandler) HandleStatus() (*StatusResponse, error) {
+func (m *mockHandler) HandleStatus(_ context.Context) (*StatusResponse, error) {
 	return m.statusResponse, m.statusError
 }
 
@@ -1229,47 +1229,51 @@ func TestServer_PanicRecovery(t *testing.T) {
 // panicingHandler is a handler that panics for testing
 type panicingHandler struct{}
 
-func (p *panicingHandler) HandlePurchase(req *PurchaseRequest) (*PurchaseResponse, error) {
+func (p *panicingHandler) HandlePurchase(_ context.Context, req *PurchaseRequest) (*PurchaseResponse, error) {
 	panic("test panic in purchase handler")
 }
-func (p *panicingHandler) HandlePurchaseCancel(req *PurchaseCancellationRequest) (*CancellationResponse, error) {
+func (p *panicingHandler) HandlePurchaseCancel(_ context.Context, req *PurchaseCancellationRequest) (*CancellationResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleQuery(req *QueryRequest) (*QueryResponse, error) { return nil, nil }
-func (p *panicingHandler) HandleWithdrawal(req *WithdrawalRequest) (*WithdrawalResponse, error) {
+func (p *panicingHandler) HandleQuery(_ context.Context, req *QueryRequest) (*QueryResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleWithdrawalQuery(req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error) {
+func (p *panicingHandler) HandleWithdrawal(_ context.Context, req *WithdrawalRequest) (*WithdrawalResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleWithdrawalCancel(req *WithdrawalCancellationRequest) (*CancellationResponse, error) {
+func (p *panicingHandler) HandleWithdrawalQuery(_ context.Context, req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleChargeback(req *ChargebackRequest) (*ChargebackResponse, error) {
+func (p *panicingHandler) HandleWithdrawalCancel(_ context.Context, req *WithdrawalCancellationRequest) (*CancellationResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleChargebackCancel(req *ChargebackCancellationRequest) (*CancellationResponse, error) {
+func (p *panicingHandler) HandleChargeback(_ context.Context, req *ChargebackRequest) (*ChargebackResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleTransfer(req *TransferRequest) (*TransferResponse, error) {
+func (p *panicingHandler) HandleChargebackCancel(_ context.Context, req *ChargebackCancellationRequest) (*CancellationResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleTransferCancel(req *TransferCancellationRequest) (*CancellationResponse, error) {
+func (p *panicingHandler) HandleTransfer(_ context.Context, req *TransferRequest) (*TransferResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleGetOTPChannel(req *OTPChannelRequest) (*OTPChannelResponse, error) {
+func (p *panicingHandler) HandleTransferCancel(_ context.Context, req *TransferCancellationRequest) (*CancellationResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleVerifyTransaction(req *VerifyTransactionRequest) (*VerifyTransactionResponse, error) {
+func (p *panicingHandler) HandleGetOTPChannel(_ context.Context, req *OTPChannelRequest) (*OTPChannelResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleXPaysOTP(req *XPaysOTPRequest) (*XPaysOTPResponse, error) {
+func (p *panicingHandler) HandleVerifyTransaction(_ context.Context, req *VerifyTransactionRequest) (*VerifyTransactionResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleCustomProvisioningData(req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error) {
+func (p *panicingHandler) HandleXPaysOTP(_ context.Context, req *XPaysOTPRequest) (*XPaysOTPResponse, error) {
 	return nil, nil
 }
-func (p *panicingHandler) HandleStatus() (*StatusResponse, error) { return nil, nil }
+func (p *panicingHandler) HandleCustomProvisioningData(_ context.Context, req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error) {
+	return nil, nil
+}
+func (p *panicingHandler) HandleStatus(_ context.Context) (*StatusResponse, error) {
+	return nil, nil
+}
 
 // TestServer_WithLogger tests logger option
 func TestServer_WithLogger(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 	"context"
 	"crypto/tls"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -61,6 +62,11 @@ type Client struct {
 	hooks           []Hook
 	logger          *slog.Logger
 	maxResponseBody int64
+	retry           *RetryConfig
+	cb              *circuitBreaker
+	certRotator     *mtls.CertRotator
+	noValidation    bool
+	rl              *rateLimiter
 }
 
 // Config holds client configuration.
@@ -81,6 +87,16 @@ type Config struct {
 	Hooks []Hook
 	// MaxResponseBody is the maximum response body size in bytes (defaults to 10 MB)
 	MaxResponseBody int64
+	// Retry is the retry configuration for failed requests (optional)
+	Retry *RetryConfig
+	// CircuitBreaker enables the circuit breaker pattern (optional)
+	CircuitBreaker *CircuitBreakerConfig
+	// CertRotation enables automatic certificate hot-reload on each TLS handshake
+	CertRotation bool
+	// NoValidation disables automatic request body validation (default: false)
+	NoValidation bool
+	// RateLimiter is the rate limiter configuration (optional)
+	RateLimiter *RateLimiterConfig
 }
 
 // New creates a new Evertec client.
@@ -120,7 +136,7 @@ func New(cfg Config) (*Client, error) {
 		},
 	}
 
-	return &Client{
+	client := &Client{
 		httpClient:      httpClient,
 		baseURL:         baseURL + BasePath,
 		apiKey:          cfg.APIKey,
@@ -128,11 +144,52 @@ func New(cfg Config) (*Client, error) {
 		hooks:           cfg.Hooks,
 		logger:          cfg.Logger,
 		maxResponseBody: maxResponseBody,
-	}, nil
+		retry:           cfg.Retry,
+		noValidation:    cfg.NoValidation,
+	}
+
+	if cfg.CircuitBreaker != nil {
+		client.cb = newCircuitBreaker(cfg.CircuitBreaker)
+	}
+	if cfg.RateLimiter != nil {
+		client.rl = newRateLimiter(cfg.RateLimiter)
+	}
+
+	return client, nil
 }
 
 // NewWithCertFiles creates a new client loading certificates from files.
+// When WithCertRotation() option is provided, the client re-reads the certificate
+// from disk on each TLS handshake, enabling hot-reload without restart.
 func NewWithCertFiles(apiKey, userAgent, certFile, keyFile string, opts ...Option) (*Client, error) {
+	cfg := Config{
+		APIKey:    apiKey,
+		UserAgent: userAgent,
+	}
+
+	for _, opt := range opts {
+		opt(&cfg)
+	}
+
+	if cfg.CertRotation {
+		rotator, err := mtls.NewCertRotator(certFile, keyFile)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create cert rotator: %w", err)
+		}
+
+		cfg.TLSConfig = &tls.Config{
+			GetClientCertificate: rotator.GetClientCertificate,
+			MinVersion:           tls.VersionTLS12,
+		}
+
+		c, err := New(cfg)
+		if err != nil {
+			return nil, err
+		}
+		c.certRotator = rotator
+		return c, nil
+	}
+
 	tlsConfig, err := mtls.LoadTLSConfig(mtls.Config{
 		CertFile: certFile,
 		KeyFile:  keyFile,
@@ -141,17 +198,17 @@ func NewWithCertFiles(apiKey, userAgent, certFile, keyFile string, opts ...Optio
 		return nil, fmt.Errorf("failed to load TLS config: %w", err)
 	}
 
-	cfg := Config{
-		APIKey:    apiKey,
-		UserAgent: userAgent,
-		TLSConfig: tlsConfig,
-	}
-
-	for _, opt := range opts {
-		opt(&cfg)
-	}
-
+	cfg.TLSConfig = tlsConfig
 	return New(cfg)
+}
+
+// RefreshCertificates forces a reload of the mTLS certificates from disk.
+// Only works when certificate rotation is enabled via WithCertRotation().
+func (c *Client) RefreshCertificates() error {
+	if c.certRotator == nil {
+		return fmt.Errorf("certificate rotation not enabled")
+	}
+	return c.certRotator.Refresh()
 }
 
 // Option is a functional option for configuring the client.
@@ -178,8 +235,104 @@ func WithHomolog() Option {
 	}
 }
 
-// request performs an HTTP request with required headers.
+// request performs an HTTP request, wrapping doRequest with retry and circuit breaker.
 func (c *Client) request(ctx context.Context, method, path string, body any, result any) error {
+	// Auto-validate request body if it implements Validatable
+	if !c.noValidation && body != nil {
+		if v, ok := body.(Validatable); ok {
+			if err := v.Validate(); err != nil {
+				return err
+			}
+		}
+	}
+
+	// Rate limiter check
+	if c.rl != nil {
+		if err := c.rl.wait(ctx); err != nil {
+			return err
+		}
+	}
+
+	// Circuit breaker check
+	if c.cb != nil {
+		if !c.cb.allow() {
+			return ErrCircuitOpen
+		}
+	}
+
+	// If no retry configured, do a single request (with CB recording)
+	if c.retry == nil {
+		err := c.doRequest(ctx, method, path, body, result)
+		if c.cb != nil {
+			c.recordCBResult(err)
+		}
+		return err
+	}
+
+	// Mutations always carry an idempotency key so they are safe to retry
+	canRetry := isRetryableMethod(method, true)
+
+	var lastErr error
+	for attempt := 0; attempt <= c.retry.MaxRetries; attempt++ {
+		if attempt > 0 {
+			// Re-check circuit breaker before each retry
+			if c.cb != nil {
+				if !c.cb.allow() {
+					return ErrCircuitOpen
+				}
+			}
+
+			delay := calculateBackoff(attempt-1, c.retry.InitialDelay, c.retry.MaxDelay)
+
+			select {
+			case <-ctx.Done():
+				return fmt.Errorf("context cancelled during retry: %w", ctx.Err())
+			case <-time.After(delay):
+			}
+		}
+
+		err := c.doRequest(ctx, method, path, body, result)
+		if c.cb != nil {
+			c.recordCBResult(err)
+		}
+		if err == nil {
+			return nil
+		}
+
+		lastErr = err
+
+		if !canRetry {
+			return err
+		}
+
+		var apiErr *APIError
+		if errors.As(err, &apiErr) && c.retry.isRetryable(apiErr.StatusCode) {
+			continue
+		}
+
+		// Not a retryable error
+		return err
+	}
+
+	return lastErr
+}
+
+// recordCBResult records success or failure on the circuit breaker.
+func (c *Client) recordCBResult(err error) {
+	if err == nil {
+		c.cb.recordSuccess()
+		return
+	}
+	var apiErr *APIError
+	if errors.As(err, &apiErr) && apiErr.StatusCode >= 500 {
+		c.cb.recordFailure()
+	} else {
+		c.cb.recordSuccess()
+	}
+}
+
+// doRequest performs a single HTTP request with required headers.
+func (c *Client) doRequest(ctx context.Context, method, path string, body any, result any) error {
 	start := time.Now()
 
 	// Check for context cancellation early to avoid unnecessary work

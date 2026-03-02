@@ -26,7 +26,7 @@ import (
 
 const (
 	tracerName = "github.com/henriqueatila/evertec-golang-sdk-processadora/webhook"
-	sdkVersion = "1.0.0"
+	sdkVersion = "2.0.0"
 )
 
 // TracingHook implements webhook.Hook with OpenTelemetry tracing.

@@ -28,63 +28,63 @@ const (
 type Handler interface {
 	// HandlePurchase handles purchase authorization requests.
 	// POST /purchases - Evertec calls this when a purchase needs authorization.
-	HandlePurchase(req *PurchaseRequest) (*PurchaseResponse, error)
+	HandlePurchase(ctx context.Context, req *PurchaseRequest) (*PurchaseResponse, error)
 
 	// HandlePurchaseCancel handles purchase cancellation requests.
 	// POST /purchases/cancel - Evertec calls this to cancel a purchase.
-	HandlePurchaseCancel(req *PurchaseCancellationRequest) (*CancellationResponse, error)
+	HandlePurchaseCancel(ctx context.Context, req *PurchaseCancellationRequest) (*CancellationResponse, error)
 
 	// HandleQuery handles balance query requests.
 	// POST /queries - Evertec calls this to query account balance.
-	HandleQuery(req *QueryRequest) (*QueryResponse, error)
+	HandleQuery(ctx context.Context, req *QueryRequest) (*QueryResponse, error)
 
 	// HandleWithdrawal handles withdrawal authorization requests.
 	// POST /withdrawals - Evertec calls this when a withdrawal needs authorization.
-	HandleWithdrawal(req *WithdrawalRequest) (*WithdrawalResponse, error)
+	HandleWithdrawal(ctx context.Context, req *WithdrawalRequest) (*WithdrawalResponse, error)
 
 	// HandleWithdrawalQuery handles withdrawal query requests.
 	// POST /withdrawalQueries - Evertec calls this to query withdrawal limits.
-	HandleWithdrawalQuery(req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error)
+	HandleWithdrawalQuery(ctx context.Context, req *WithdrawalQueryRequest) (*WithdrawalQueryResponse, error)
 
 	// HandleWithdrawalCancel handles withdrawal cancellation requests.
 	// POST /withdrawals/cancel - Evertec calls this to cancel a withdrawal.
-	HandleWithdrawalCancel(req *WithdrawalCancellationRequest) (*CancellationResponse, error)
+	HandleWithdrawalCancel(ctx context.Context, req *WithdrawalCancellationRequest) (*CancellationResponse, error)
 
 	// HandleChargeback handles chargeback requests.
 	// POST /chargebacks - Evertec calls this when a chargeback is initiated.
-	HandleChargeback(req *ChargebackRequest) (*ChargebackResponse, error)
+	HandleChargeback(ctx context.Context, req *ChargebackRequest) (*ChargebackResponse, error)
 
 	// HandleChargebackCancel handles chargeback cancellation requests.
 	// POST /chargebacks/cancel - Evertec calls this to cancel a chargeback.
-	HandleChargebackCancel(req *ChargebackCancellationRequest) (*CancellationResponse, error)
+	HandleChargebackCancel(ctx context.Context, req *ChargebackCancellationRequest) (*CancellationResponse, error)
 
 	// HandleTransfer handles transfer authorization requests.
 	// POST /transfers - Evertec calls this when a P2P transfer needs authorization.
-	HandleTransfer(req *TransferRequest) (*TransferResponse, error)
+	HandleTransfer(ctx context.Context, req *TransferRequest) (*TransferResponse, error)
 
 	// HandleTransferCancel handles transfer cancellation requests.
 	// POST /transfers/cancel - Evertec calls this to cancel a transfer.
-	HandleTransferCancel(req *TransferCancellationRequest) (*CancellationResponse, error)
+	HandleTransferCancel(ctx context.Context, req *TransferCancellationRequest) (*CancellationResponse, error)
 
 	// HandleGetOTPChannel handles OTP channel requests for 3DS.
 	// POST /acs/getOTPChannel - Evertec calls this for 3DS authentication.
-	HandleGetOTPChannel(req *OTPChannelRequest) (*OTPChannelResponse, error)
+	HandleGetOTPChannel(ctx context.Context, req *OTPChannelRequest) (*OTPChannelResponse, error)
 
 	// HandleVerifyTransaction handles 3DS verification requests.
 	// POST /acs/verifyTransaction - Evertec calls this to verify 3DS OTP.
-	HandleVerifyTransaction(req *VerifyTransactionRequest) (*VerifyTransactionResponse, error)
+	HandleVerifyTransaction(ctx context.Context, req *VerifyTransactionRequest) (*VerifyTransactionResponse, error)
 
 	// HandleXPaysOTP handles xPays OTP requests.
 	// POST /xpays/otp - Evertec calls this for wallet provisioning OTP.
-	HandleXPaysOTP(req *XPaysOTPRequest) (*XPaysOTPResponse, error)
+	HandleXPaysOTP(ctx context.Context, req *XPaysOTPRequest) (*XPaysOTPResponse, error)
 
 	// HandleCustomProvisioningData handles xPays custom provisioning data requests.
 	// POST /xpays/customProvisioningData - Evertec calls this for custom wallet data.
-	HandleCustomProvisioningData(req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error)
+	HandleCustomProvisioningData(ctx context.Context, req *CustomProvisioningDataRequest) (*types.CustomProvisioningDataResponse, error)
 
 	// HandleStatus handles health check requests.
 	// GET /status - Evertec calls this to check if your server is healthy.
-	HandleStatus() (*StatusResponse, error)
+	HandleStatus(ctx context.Context) (*StatusResponse, error)
 }
 
 // Server wraps a Handler and provides HTTP routing.
@@ -400,7 +400,7 @@ func (s *Server) handleMethodNotAllowed(w http.ResponseWriter, r *http.Request, 
 }
 
 func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request, ctx context.Context, reqInfo *RequestInfo, start time.Time, _ []byte) {
-	resp, err := s.handler.HandleStatus()
+	resp, err := s.handler.HandleStatus(ctx)
 	statusCode := http.StatusOK
 	if err != nil {
 		statusCode = http.StatusServiceUnavailable
@@ -442,7 +442,7 @@ func (s *Server) handlePurchase(w http.ResponseWriter, r *http.Request, ctx cont
 		reqInfo.Amount = req.TotalAmount.Amount
 	}
 
-	resp, err := s.handler.HandlePurchase(&req)
+	resp, err := s.handler.HandlePurchase(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -481,7 +481,7 @@ func (s *Server) handlePurchaseCancel(w http.ResponseWriter, r *http.Request, ct
 		reqInfo.CardID = req.Card.PaysmartID
 	}
 
-	resp, err := s.handler.HandlePurchaseCancel(&req)
+	resp, err := s.handler.HandlePurchaseCancel(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -520,7 +520,7 @@ func (s *Server) handleQuery(w http.ResponseWriter, r *http.Request, ctx context
 		reqInfo.CardID = req.Card.PaysmartID
 	}
 
-	resp, err := s.handler.HandleQuery(&req)
+	resp, err := s.handler.HandleQuery(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -562,7 +562,7 @@ func (s *Server) handleWithdrawal(w http.ResponseWriter, r *http.Request, ctx co
 		reqInfo.Amount = req.TotalAmount.Amount
 	}
 
-	resp, err := s.handler.HandleWithdrawal(&req)
+	resp, err := s.handler.HandleWithdrawal(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -601,7 +601,7 @@ func (s *Server) handleWithdrawalQuery(w http.ResponseWriter, r *http.Request, c
 		reqInfo.CardID = req.Card.PaysmartID
 	}
 
-	resp, err := s.handler.HandleWithdrawalQuery(&req)
+	resp, err := s.handler.HandleWithdrawalQuery(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -640,7 +640,7 @@ func (s *Server) handleWithdrawalCancel(w http.ResponseWriter, r *http.Request, 
 		reqInfo.CardID = req.Card.PaysmartID
 	}
 
-	resp, err := s.handler.HandleWithdrawalCancel(&req)
+	resp, err := s.handler.HandleWithdrawalCancel(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -682,7 +682,7 @@ func (s *Server) handleChargeback(w http.ResponseWriter, r *http.Request, ctx co
 		reqInfo.Amount = req.ChargebackAmount.Amount
 	}
 
-	resp, err := s.handler.HandleChargeback(&req)
+	resp, err := s.handler.HandleChargeback(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -721,7 +721,7 @@ func (s *Server) handleChargebackCancel(w http.ResponseWriter, r *http.Request, 
 		reqInfo.CardID = req.Card.PaysmartID
 	}
 
-	resp, err := s.handler.HandleChargebackCancel(&req)
+	resp, err := s.handler.HandleChargebackCancel(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -763,7 +763,7 @@ func (s *Server) handleTransfer(w http.ResponseWriter, r *http.Request, ctx cont
 		reqInfo.Amount = req.TotalAmount.Amount
 	}
 
-	resp, err := s.handler.HandleTransfer(&req)
+	resp, err := s.handler.HandleTransfer(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -802,7 +802,7 @@ func (s *Server) handleTransferCancel(w http.ResponseWriter, r *http.Request, ct
 		reqInfo.CardID = req.SourceCard.PaysmartID
 	}
 
-	resp, err := s.handler.HandleTransferCancel(&req)
+	resp, err := s.handler.HandleTransferCancel(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -839,7 +839,7 @@ func (s *Server) handleGetOTPChannel(w http.ResponseWriter, r *http.Request, ctx
 	reqInfo.AccountID = req.AccountID
 	reqInfo.CardID = req.CardID
 
-	resp, err := s.handler.HandleGetOTPChannel(&req)
+	resp, err := s.handler.HandleGetOTPChannel(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -874,7 +874,7 @@ func (s *Server) handleVerifyTransaction(w http.ResponseWriter, r *http.Request,
 	reqInfo.AccountID = req.AccountID
 	reqInfo.CardID = req.CardID
 
-	resp, err := s.handler.HandleVerifyTransaction(&req)
+	resp, err := s.handler.HandleVerifyTransaction(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -913,7 +913,7 @@ func (s *Server) handleXPaysOTP(w http.ResponseWriter, r *http.Request, ctx cont
 	reqInfo.AccountID = req.AccountID
 	reqInfo.CardID = req.CardID
 
-	resp, err := s.handler.HandleXPaysOTP(&req)
+	resp, err := s.handler.HandleXPaysOTP(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,
@@ -952,7 +952,7 @@ func (s *Server) handleCustomProvisioningData(w http.ResponseWriter, r *http.Req
 	reqInfo.AccountID = req.AccountID
 	reqInfo.CardID = req.CardID
 
-	resp, err := s.handler.HandleCustomProvisioningData(&req)
+	resp, err := s.handler.HandleCustomProvisioningData(ctx, &req)
 	if err != nil {
 		s.executeAfterHooks(ctx, reqInfo, &ResponseInfo{
 			StatusCode: http.StatusInternalServerError,

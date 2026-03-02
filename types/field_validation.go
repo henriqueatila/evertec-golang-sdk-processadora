@@ -215,7 +215,11 @@ func (a AccountOwnerData) Validate() error {
 }
 
 // Validate validates the SourceAudit fields including length constraints.
-func (s SourceAudit) Validate() error {
+// Calling Validate on a nil *SourceAudit pointer is safe and returns nil.
+func (s *SourceAudit) Validate() error {
+	if s == nil {
+		return nil
+	}
 	if s.OperatorID != "" {
 		if err := ValidateMaxLength("OperatorID", s.OperatorID, MaxIssuerRequestID); err != nil {
 			return err

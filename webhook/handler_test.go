@@ -2,6 +2,7 @@ package webhook
 
 import (
 	"bytes"
+	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -30,7 +31,7 @@ type mockWebhookHandler struct {
 	returnError               error
 }
 
-func (m *mockWebhookHandler) OnDisputeStatusChange(event *DisputeStatusChangeEvent) error {
+func (m *mockWebhookHandler) OnDisputeStatusChange(_ context.Context, event *DisputeStatusChangeEvent) error {
 	m.mu.Lock()
 	m.disputeStatusChangeCalled = true
 	m.lastDisputeEvent = event
@@ -38,7 +39,7 @@ func (m *mockWebhookHandler) OnDisputeStatusChange(event *DisputeStatusChangeEve
 	return m.returnError
 }
 
-func (m *mockWebhookHandler) OnStatementClosed(event *StatementClosedEvent) error {
+func (m *mockWebhookHandler) OnStatementClosed(_ context.Context, event *StatementClosedEvent) error {
 	m.mu.Lock()
 	m.statementClosedCalled = true
 	m.lastStatementEvent = event
@@ -46,7 +47,7 @@ func (m *mockWebhookHandler) OnStatementClosed(event *StatementClosedEvent) erro
 	return m.returnError
 }
 
-func (m *mockWebhookHandler) OnPaymentDue(event *PaymentDueEvent) error {
+func (m *mockWebhookHandler) OnPaymentDue(_ context.Context, event *PaymentDueEvent) error {
 	m.mu.Lock()
 	m.paymentDueCalled = true
 	m.lastPaymentDueEvent = event
@@ -54,7 +55,7 @@ func (m *mockWebhookHandler) OnPaymentDue(event *PaymentDueEvent) error {
 	return m.returnError
 }
 
-func (m *mockWebhookHandler) OnCardStatusChange(event *CardStatusChangeEvent) error {
+func (m *mockWebhookHandler) OnCardStatusChange(_ context.Context, event *CardStatusChangeEvent) error {
 	m.mu.Lock()
 	m.cardStatusChangeCalled = true
 	m.lastCardStatusEvent = event
@@ -62,7 +63,7 @@ func (m *mockWebhookHandler) OnCardStatusChange(event *CardStatusChangeEvent) er
 	return m.returnError
 }
 
-func (m *mockWebhookHandler) OnDeviceTokenStatus(event *DeviceTokenStatusEvent) error {
+func (m *mockWebhookHandler) OnDeviceTokenStatus(_ context.Context, event *DeviceTokenStatusEvent) error {
 	m.mu.Lock()
 	m.deviceTokenStatusCalled = true
 	m.lastDeviceTokenEvent = event
@@ -592,21 +593,22 @@ func TestEventType_Values(t *testing.T) {
 // TestBaseHandler tests default BaseHandler implementation
 func TestBaseHandler(t *testing.T) {
 	handler := &BaseHandler{}
+	ctx := context.Background()
 
 	// All methods should return nil (no-op)
-	if err := handler.OnDisputeStatusChange(&DisputeStatusChangeEvent{}); err != nil {
+	if err := handler.OnDisputeStatusChange(ctx, &DisputeStatusChangeEvent{}); err != nil {
 		t.Errorf("OnDisputeStatusChange() error = %v, want nil", err)
 	}
-	if err := handler.OnStatementClosed(&StatementClosedEvent{}); err != nil {
+	if err := handler.OnStatementClosed(ctx, &StatementClosedEvent{}); err != nil {
 		t.Errorf("OnStatementClosed() error = %v, want nil", err)
 	}
-	if err := handler.OnPaymentDue(&PaymentDueEvent{}); err != nil {
+	if err := handler.OnPaymentDue(ctx, &PaymentDueEvent{}); err != nil {
 		t.Errorf("OnPaymentDue() error = %v, want nil", err)
 	}
-	if err := handler.OnCardStatusChange(&CardStatusChangeEvent{}); err != nil {
+	if err := handler.OnCardStatusChange(ctx, &CardStatusChangeEvent{}); err != nil {
 		t.Errorf("OnCardStatusChange() error = %v, want nil", err)
 	}
-	if err := handler.OnDeviceTokenStatus(&DeviceTokenStatusEvent{}); err != nil {
+	if err := handler.OnDeviceTokenStatus(ctx, &DeviceTokenStatusEvent{}); err != nil {
 		t.Errorf("OnDeviceTokenStatus() error = %v, want nil", err)
 	}
 }
