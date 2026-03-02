@@ -7,7 +7,7 @@ type Account struct {
 	PsProductCode       string         `json:"psProductCode"`
 	PsProductName       string         `json:"psProductName,omitempty"`
 	IssuerAccountID     string         `json:"issuerAccountId,omitempty"`
-	AccountOwner        any    `json:"accountOwner"`
+	AccountOwner        any            `json:"accountOwner"`
 	CreditInfo          *CreditInfo    `json:"creditInfo,omitempty"`
 	Cards               []Card         `json:"cards,omitempty"`
 	Status              *AccountStatus `json:"status,omitempty"`
@@ -118,19 +118,19 @@ type NewAccountRequest struct {
 	IssuerRequestID       string       `json:"issuerRequestId,omitempty"`
 	PsProductCode         string       `json:"psProductCode"`
 	IssuerAccountID       string       `json:"issuerAccountId,omitempty"`
-	AccountOwner          any  `json:"accountOwner"`
+	AccountOwner          any          `json:"accountOwner"`
 	CreditInfo            *CreditInfo  `json:"creditInfo,omitempty"`
-	BillingAddress        any  `json:"billingAddress"`
-	CardDeliveryAddress   any  `json:"cardDeliveryAddress"`
-	RequestingCompanyInfo any  `json:"requestingCompanyInfo,omitempty"`
-	BankAccount           any  `json:"bankAccount,omitempty"`
+	BillingAddress        any          `json:"billingAddress"`
+	CardDeliveryAddress   any          `json:"cardDeliveryAddress"`
+	RequestingCompanyInfo any          `json:"requestingCompanyInfo,omitempty"`
+	BankAccount           any          `json:"bankAccount,omitempty"`
 	SourceAudit           *SourceAudit `json:"sourceAudit,omitempty"`
 }
 
 // AccountCreatedSuccessfully from OpenAPI spec.
 type AccountCreatedSuccessfully struct {
-	ResultData any `json:"resultData"`
-	Account    Account     `json:"account"`
+	ResultData any     `json:"resultData"`
+	Account    Account `json:"account"`
 }
 
 // UpdateAccountRequest from OpenAPI spec.
@@ -138,11 +138,11 @@ type UpdateAccountRequest struct {
 	IssuerRequestID       string       `json:"issuerRequestId,omitempty"`
 	IssuerAccountID       string       `json:"issuerAccountId,omitempty"`
 	PsProductCode         string       `json:"psProductCode,omitempty"`
-	AccountOwner          any  `json:"accountOwner,omitempty"`
+	AccountOwner          any          `json:"accountOwner,omitempty"`
 	CreditInfo            *CreditInfo  `json:"creditInfo,omitempty"`
-	BillingAddress        any  `json:"billingAddress,omitempty"`
-	CardDeliveryAddress   any  `json:"cardDeliveryAddress,omitempty"`
-	RequestingCompanyInfo any  `json:"requestingCompanyInfo,omitempty"`
+	BillingAddress        any          `json:"billingAddress,omitempty"`
+	CardDeliveryAddress   any          `json:"cardDeliveryAddress,omitempty"`
+	RequestingCompanyInfo any          `json:"requestingCompanyInfo,omitempty"`
 	SourceAudit           *SourceAudit `json:"sourceAudit,omitempty"`
 }
 
@@ -154,7 +154,7 @@ type BlockAccountRequest struct {
 
 // BlockAccountResult from OpenAPI spec.
 type BlockAccountResult struct {
-	ResultData      any             `json:"resultData,omitempty"`
+	ResultData      any                     `json:"resultData,omitempty"`
 	AppliedBlocking *AccountBlocking        `json:"appliedBlocking,omitempty"`
 	BlockingSummary *AccountBlockingSummary `json:"blockingSummary,omitempty"`
 	BlockedAccount  *Account                `json:"blockedAccount,omitempty"`
@@ -168,7 +168,7 @@ type UnblockAccountRequest struct {
 
 // UnblockAccountResult from OpenAPI spec.
 type UnblockAccountResult struct {
-	ResultData       any             `json:"resultData,omitempty"`
+	ResultData       any                     `json:"resultData,omitempty"`
 	RemovedBlocking  *AccountBlocking        `json:"removedBlocking,omitempty"`
 	BlockingSummary  *AccountBlockingSummary `json:"blockingSummary,omitempty"`
 	UnblockedAccount *Account                `json:"unblockedAccount,omitempty"`
@@ -183,7 +183,7 @@ type CancelAccountRequest struct {
 
 // AccountCancelledSuccessfully from OpenAPI spec.
 type AccountCancelledSuccessfully struct {
-	ResultData          any             `json:"resultData,omitempty"`
+	ResultData          any                     `json:"resultData,omitempty"`
 	AppliedCancellation *AccountBlocking        `json:"appliedCancellation,omitempty"`
 	BlockingSummary     *AccountBlockingSummary `json:"blockingSummary,omitempty"`
 	CancelledAccount    *Account                `json:"cancelledAccount,omitempty"`
@@ -193,14 +193,14 @@ type AccountCancelledSuccessfully struct {
 type CreditInfo struct {
 	CreditLimit     any `json:"creditLimit,omitempty"`
 	WithdrawalLimit any `json:"withdrawalLimit,omitempty"`
-	PaymentDue      int         `json:"paymentDue,omitempty"`
+	PaymentDue      int `json:"paymentDue,omitempty"`
 }
 
 // GetCreditAnalysisResponse from OpenAPI spec.
 type GetCreditAnalysisResponse struct {
-	ResultData           any `json:"resultData,omitempty"`
-	AccountID            string      `json:"accountId,omitempty"`
-	Status               string      `json:"status,omitempty"`
-	RequestedLimit       int         `json:"requestedLimit,omitempty"`
-	MaximumApprovedLimit int         `json:"maximumApprovedLimit,omitempty"`
+	ResultData           any    `json:"resultData,omitempty"`
+	AccountID            string `json:"accountId,omitempty"`
+	Status               string `json:"status,omitempty"`
+	RequestedLimit       int    `json:"requestedLimit,omitempty"`
+	MaximumApprovedLimit int    `json:"maximumApprovedLimit,omitempty"`
 }

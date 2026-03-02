@@ -25,13 +25,13 @@ type CampaignResponseObject struct {
 type CampaignListResponseObject struct {
 	ResultData any              `json:"resultData,omitempty"`
 	Campaigns  []map[string]any `json:"campaigns,omitempty"`
-	PageNum    string                   `json:"page_num,omitempty"`
-	TotalPages string                   `json:"total_pages,omitempty"`
+	PageNum    string           `json:"page_num,omitempty"`
+	TotalPages string           `json:"total_pages,omitempty"`
 }
 
 // CampaignAccountsListResponseObject from OpenAPI spec.
 type CampaignAccountsListResponseObject struct {
-	ResultData any     `json:"resultData,omitempty"`
+	ResultData any             `json:"resultData,omitempty"`
 	Accounts   []AccountObject `json:"accounts,omitempty"`
 	PageNum    int             `json:"page_num,omitempty"`
 	TotalPages int             `json:"total_pages,omitempty"`

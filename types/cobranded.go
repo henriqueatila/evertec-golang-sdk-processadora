@@ -15,10 +15,10 @@ type MerchantVanRequest struct {
 
 // MerchantVanResponse from OpenAPI spec.
 type MerchantVanResponse struct {
-	ResultData         any   `json:"resultData"`
-	BrandErrorList     []any `json:"brandErrorList,omitempty"`
+	ResultData         any           `json:"resultData"`
+	BrandErrorList     []any         `json:"brandErrorList,omitempty"`
 	LiteralBrandError  string        `json:"literalBrandError,omitempty"`
-	Brand              any   `json:"brand,omitempty"`
+	Brand              any           `json:"brand,omitempty"`
 	AcquirerID         int           `json:"acquirerId,omitempty"`
 	Document           string        `json:"document,omitempty"`
 	DocumentType       string        `json:"documentType,omitempty"`
@@ -31,7 +31,7 @@ type MerchantVanResponse struct {
 
 // ReducedMerchantVanResponse from OpenAPI spec.
 type ReducedMerchantVanResponse struct {
-	ResultData        any   `json:"resultData"`
-	BrandErrorList    []any `json:"brandErrorList,omitempty"`
-	LiteralBrandError string        `json:"literalBrandError,omitempty"`
+	ResultData        any    `json:"resultData"`
+	BrandErrorList    []any  `json:"brandErrorList,omitempty"`
+	LiteralBrandError string `json:"literalBrandError,omitempty"`
 }

@@ -36,6 +36,6 @@ type UnprovisionRequest struct {
 
 // UnprovisionSuccesfully from OpenAPI spec.
 type UnprovisionSuccesfully struct {
-	Response    *ResultData            `json:"response,omitempty"`
+	Response    *ResultData    `json:"response,omitempty"`
 	Transaction map[string]any `json:"transaction,omitempty"`
 }

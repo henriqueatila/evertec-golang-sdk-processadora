@@ -538,8 +538,8 @@ type CreditAdjustmentRequest struct {
 
 // AdjustmentResponse represents the response from an adjustment operation.
 type AdjustmentResponse struct {
-	ResultData    any `json:"resultData,omitempty"`
-	TransactionID string      `json:"transactionId,omitempty"`
+	ResultData    any    `json:"resultData,omitempty"`
+	TransactionID string `json:"transactionId,omitempty"`
 }
 
 // ============================================================================
@@ -560,9 +560,9 @@ type GetDataprepStatusResponse = DataprepStatusResult
 
 // RegisterPaymentResponse represents the response from registering a payment.
 type RegisterPaymentResponse struct {
-	ResultData    any `json:"resultData,omitempty"`
-	TransactionID string      `json:"transactionId,omitempty"`
-	Status        string      `json:"status,omitempty"`
+	ResultData    any    `json:"resultData,omitempty"`
+	TransactionID string `json:"transactionId,omitempty"`
+	Status        string `json:"status,omitempty"`
 }
 
 // DebitAdjustmentRequest represents a request to create a debit adjustment.

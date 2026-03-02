@@ -3,8 +3,8 @@ package types
 
 // Installment from OpenAPI spec.
 type Installment struct {
-	InstallmentDate any `json:"installmentDate"`
-	Amount          Amount      `json:"amount"`
+	InstallmentDate any    `json:"installmentDate"`
+	Amount          Amount `json:"amount"`
 }
 
 // InstallmentOption from OpenAPI spec.
@@ -27,7 +27,7 @@ type InstallmentPurchase struct {
 	CardID                 string        `json:"cardId,omitempty"`
 	LastFourDigits         string        `json:"last_four_digits"`
 	TransactionDescription string        `json:"transactionDescription"`
-	TransactionDate        any   `json:"transactionDate"`
+	TransactionDate        any           `json:"transactionDate"`
 	Installments           []Installment `json:"installments"`
 }
 
@@ -51,7 +51,7 @@ type installmentSimulationBody struct {
 
 // installmentSimulationResult from OpenAPI spec.
 type installmentSimulationResult struct {
-	ResultData any      `json:"resultData,omitempty"`
+	ResultData any              `json:"resultData,omitempty"`
 	Data       *installmentData `json:"data,omitempty"`
 }
 

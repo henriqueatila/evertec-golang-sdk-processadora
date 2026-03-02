@@ -76,7 +76,7 @@ type TransactionFraud struct {
 	MerchantZipcode                  string                            `json:"merchantZipcode,omitempty"`
 	TransactionStatus                TransactionStatus                 `json:"transactionStatus"`
 	MerchantAddress                  string                            `json:"merchantAddress,omitempty"`
-	Card                             any                       `json:"card,omitempty"`
+	Card                             any                               `json:"card,omitempty"`
 	TransactionID                    string                            `json:"transactionId"`
 	MCC                              string                            `json:"mcc,omitempty"`
 	MerchantCity                     string                            `json:"merchantCity,omitempty"`
@@ -91,7 +91,7 @@ type TransactionFraud struct {
 	MerchantUf                       string                            `json:"merchantUf,omitempty"`
 	CancellingTransactionID          string                            `json:"cancellingTransactionId,omitempty"`
 	CancellingTransactionIDs         []string                          `json:"cancellingTransactionIds,omitempty"`
-	InternationalTransactionData     any                       `json:"internationalTransactionData,omitempty"`
+	InternationalTransactionData     any                               `json:"internationalTransactionData,omitempty"`
 	AuthorizationAdvice              bool                              `json:"authorizationAdvice,omitempty"`
 	MITAdditionalData                *MITAdditionalData                `json:"mitAdditionalData,omitempty"`
 	AdditionalTerminalData           *AdditionalTerminalData           `json:"additionalTerminalData,omitempty"`

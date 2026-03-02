@@ -14,13 +14,13 @@ type InclusiveTransaction struct {
 
 // InclusiveTransactionRequest from OpenAPI spec.
 type InclusiveTransactionRequest struct {
-	AccountID     string      `json:"accountId"`
-	TransactionID string      `json:"transactionId"`
-	Code          string      `json:"code"`
-	ReasonCode    string      `json:"reasonCode"`
-	Text          string      `json:"text"`
-	Partial       bool        `json:"partial"`
-	Amount        any `json:"amount,omitempty"`
+	AccountID     string `json:"accountId"`
+	TransactionID string `json:"transactionId"`
+	Code          string `json:"code"`
+	ReasonCode    string `json:"reasonCode"`
+	Text          string `json:"text"`
+	Partial       bool   `json:"partial"`
+	Amount        any    `json:"amount,omitempty"`
 }
 
 // InclusiveTransactionCreationSuccess from OpenAPI spec.

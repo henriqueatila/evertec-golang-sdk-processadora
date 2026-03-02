@@ -46,9 +46,9 @@ type StatusInfo struct {
 // Event represents a webhook event from EventHub.
 // The Data field contains event-specific payload based on EventType.
 type Event struct {
-	EventType EventType   `json:"eventType"`
-	EventID   string      `json:"eventId,omitempty"`
-	Data      any `json:"data,omitempty"`
+	EventType EventType `json:"eventType"`
+	EventID   string    `json:"eventId,omitempty"`
+	Data      any       `json:"data,omitempty"`
 }
 
 // ========================================

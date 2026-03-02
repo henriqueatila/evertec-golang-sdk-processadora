@@ -20,7 +20,7 @@ type CreateVirtualCardRequest struct {
 // CreateVirtualCardResponse from OpenAPI spec.
 // Reference: https://paysmart-api.gitlab.io/processadora/PT-br/docs/criacao-de-cartoes-virtuais
 type CreateVirtualCardResponse struct {
-	ResultData      any                     `json:"resultData,omitempty"`
+	ResultData      any                             `json:"resultData,omitempty"`
 	VirtualCard     *VirtualCardDescriptor          `json:"virtualCard,omitempty"`
 	VirtualCardList []ExtendedVirtualCardDescriptor `json:"virtualCardList,omitempty"`
 	LinkID          string                          `json:"linkId,omitempty"`
@@ -36,16 +36,16 @@ type GetVirtualCardResponse struct {
 
 // ListVirtualCardsResponse from OpenAPI spec.
 type ListVirtualCardsResponse struct {
-	ResultData        any               `json:"resultData,omitempty"`
+	ResultData        any                       `json:"resultData,omitempty"`
 	VirtualCardsCount int                       `json:"virtual_cards_count,omitempty"`
 	VirtualCards      []ComposedVirtualCardInfo `json:"virtual_cards,omitempty"`
 }
 
 // VirtualCardInfo from OpenAPI spec.
 type VirtualCardInfo struct {
-	StatusCode        any `json:"statusCode,omitempty"`
-	CardID            string      `json:"cardId,omitempty"`
-	StatusDescription string      `json:"statusDescription,omitempty"`
+	StatusCode        any    `json:"statusCode,omitempty"`
+	CardID            string `json:"cardId,omitempty"`
+	StatusDescription string `json:"statusDescription,omitempty"`
 }
 
 // VirtualCardDescriptor from OpenAPI spec.
@@ -103,7 +103,7 @@ type CancelVirtualCardRequest struct {
 
 // CancelVirtualCardResponse from OpenAPI spec.
 type CancelVirtualCardResponse struct {
-	ResultData           any              `json:"resultData,omitempty"`
+	ResultData           any                      `json:"resultData,omitempty"`
 	CancelledVirtualCard *ComposedVirtualCardInfo `json:"cancelledVirtualCard,omitempty"`
 }
 

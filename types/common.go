@@ -72,11 +72,11 @@ type PersonalIdentityDocumentInfo struct {
 
 // OccupationInfo from OpenAPI spec.
 type OccupationInfo struct {
-	CompanyName    string                 `json:"companyName,omitempty"`
-	JobTitle       string                 `json:"jobTitle,omitempty"`
-	CurrentJobTime int                    `json:"currentJobTime,omitempty"`
+	CompanyName    string         `json:"companyName,omitempty"`
+	JobTitle       string         `json:"jobTitle,omitempty"`
+	CurrentJobTime int            `json:"currentJobTime,omitempty"`
 	Income         map[string]any `json:"income,omitempty"`
-	IncomeRange    string                 `json:"incomeRange,omitempty"`
+	IncomeRange    string         `json:"incomeRange,omitempty"`
 }
 
 // CompanyInfo from OpenAPI spec.
@@ -137,8 +137,8 @@ type FeesAndCET struct {
 
 // DailyFeeEntry from OpenAPI spec.
 type DailyFeeEntry struct {
-	Day           string                 `json:"day,omitempty"`
-	Financed      int                    `json:"financed,omitempty"`
+	Day           string         `json:"day,omitempty"`
+	Financed      int            `json:"financed,omitempty"`
 	DailyIOF      map[string]any `json:"daily_iof,omitempty"`
 	DailyInterest map[string]any `json:"daily_interest,omitempty"`
 	ExpectedFees  map[string]any `json:"expected_fees,omitempty"`
