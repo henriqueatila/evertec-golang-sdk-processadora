@@ -3,7 +3,11 @@
 // Types are based on: https://paysmart-api.gitlab.io/processadora/PT-br/docs/compra
 package authorization
 
-import "github.com/henriqueatila/evertec-golang-sdk-processadora/types"
+import (
+	"fmt"
+
+	"github.com/henriqueatila/evertec-golang-sdk-processadora/types"
+)
 
 // ========================================
 // Amount Types
@@ -687,10 +691,23 @@ func (c ResponseCode) IsApproved() bool {
 
 // String returns the two-digit string representation of the code.
 func (c ResponseCode) String() string {
-	if c == ResponseCodeApproved {
-		return "00"
-	}
-	return ""
+	return fmt.Sprintf("%02d", int(c))
+}
+
+// ========================================
+// Sensitive Data Masking
+// ========================================
+
+// String returns a string representation of AuthCard with PAN masked.
+func (c AuthCard) String() string {
+	return fmt.Sprintf("AuthCard{PaysmartID:%q, IssuerID:%d, PAN:%q, PANSeq:%q}",
+		c.PaysmartID, c.IssuerID, types.MaskPAN(c.PAN), c.PANSeq)
+}
+
+// String returns a string representation of AuthTokenPaymentData with PAN/FPAN masked.
+func (t AuthTokenPaymentData) String() string {
+	return fmt.Sprintf("AuthTokenPaymentData{FPAN:%q, PAN:%q, TokenStatus:%q}",
+		types.MaskPAN(t.FPAN), types.MaskPAN(t.PAN), t.TokenStatus)
 }
 
 // ========================================

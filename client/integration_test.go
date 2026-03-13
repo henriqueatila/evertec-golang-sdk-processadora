@@ -330,7 +330,7 @@ func TestIntegration_RateLimiter_BlocksBurst(t *testing.T) {
 		BaseURL:   server.URL,
 		TLSConfig: &tls.Config{InsecureSkipVerify: true},
 		RateLimiter: &RateLimiterConfig{
-			RequestsPerSecond: 10,
+			RequestsPerSecond: 0.1, // 1 token per 10s — slow enough to avoid timing flakes
 			BurstSize:         2,
 			WaitTimeout:       0,
 		},
@@ -347,7 +347,7 @@ func TestIntegration_RateLimiter_BlocksBurst(t *testing.T) {
 		}
 	}
 
-	// Next request exceeds burst, should fail
+	// Next request exceeds burst, should fail (refill rate too slow to recover)
 	err = c.request(context.Background(), "GET", "/test", nil, nil)
 	if err != ErrRateLimited {
 		t.Errorf("Expected ErrRateLimited, got: %v", err)

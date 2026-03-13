@@ -63,6 +63,12 @@ type rateLimiter struct {
 }
 
 func newRateLimiter(config *RateLimiterConfig) *rateLimiter {
+	if config.RequestsPerSecond <= 0 {
+		config.RequestsPerSecond = defaultRateLimiterConfig().RequestsPerSecond
+	}
+	if config.BurstSize <= 0 {
+		config.BurstSize = defaultRateLimiterConfig().BurstSize
+	}
 	return &rateLimiter{
 		config:    config,
 		tokens:    float64(config.BurstSize),

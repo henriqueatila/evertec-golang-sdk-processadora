@@ -775,8 +775,8 @@ func TestResponseCode_String(t *testing.T) {
 	if s := ResponseCodeApproved.String(); s != "00" {
 		t.Errorf("ResponseCodeApproved.String() = %s, want 00", s)
 	}
-	if s := ResponseCodeInsufficientFunds.String(); s != "" {
-		t.Errorf("ResponseCodeInsufficientFunds.String() = %s, want empty", s)
+	if s := ResponseCodeInsufficientFunds.String(); s != "51" {
+		t.Errorf("ResponseCodeInsufficientFunds.String() = %s, want 51", s)
 	}
 }
 
